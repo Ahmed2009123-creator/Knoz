@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفنانه كنزي — مقولات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-black:#0f0a0c;
+    --bg-panel:#1a1216;
+    --bg-panel-2:#211519;
+    --panel-border:#33202a;
+    --burgundy:#5c1a2e;
+    --burgundy-light:#7c2c44;
+    --red-dark:#8c1f2c;
+    --red-glow:#b8334a;
+    --grey-mid:#7d7377;
+    --grey-light:#dcd3d6;
+    --grey-faint:#4c4249;
+    --ink:#c9c0c3;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -10%, rgba(92,26,46,0.35), transparent 60%),
+      radial-gradient(ellipse 100% 60% at 50% 110%, rgba(140,31,44,0.18), transparent 60%),
+      var(--bg-black);
+    color:var(--grey-light);
+    font-family:'Tajawal', sans-serif;
+    overflow-x:hidden;
+  }
+
+  .stage{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding:48px 20px 60px;
+  }
+
+  /* ---------- header / candle ---------- */
+  .brand{
+    text-align:center;
+    margin-bottom:6px;
+  }
+
+  .candle-wrap{
+    width:64px;
+    height:90px;
+    margin:0 auto 10px;
+    position:relative;
+  }
+
+  .flame{
+    position:absolute;
+    top:0; left:50%;
+    width:14px; height:22px;
+    transform:translateX(-50%);
+    background:radial-gradient(circle at 50% 65%, #ffd9a8 0%, var(--red-glow) 45%, var(--burgundy) 80%, transparent 90%);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    filter:blur(0.3px);
+    animation:flicker 2.6s ease-in-out infinite;
+    transform-origin:50% 90%;
+  }
+  .flame::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    margin:auto;
+    width:60%;
+    height:70%;
+    background:radial-gradient(circle at 50% 70%, #fff3d6 0%, #ffcf8a 60%, transparent 80%);
+    border-radius:50%;
+    opacity:0.85;
+  }
+  .glow{
+    position:absolute;
+    top:-14px; left:50%;
+    width:90px; height:90px;
+    transform:translateX(-50%);
+    background:radial-gradient(circle, rgba(184,51,74,0.28) 0%, transparent 70%);
+    pointer-events:none;
+    animation:glow-pulse 2.6s ease-in-out infinite;
+  }
+  .wick{
+    position:absolute;
+    top:20px; left:50%;
+    width:2px; height:6px;
+    transform:translateX(-50%);
+    background:#2a1c1c;
+  }
+  .candle-body{
+    position:absolute;
+    top:24px; left:50%;
+    width:22px; height:60px;
+    transform:translateX(-50%);
+    background:linear-gradient(180deg, #d8cfc9 0%, #b9aca6 100%);
+    border-radius:3px 3px 2px 2px;
+    box-shadow:inset -4px 0 6px rgba(0,0,0,0.25), inset 3px 0 4px rgba(255,255,255,0.15);
+  }
+  .drip{
+    position:absolute;
+    top:24px; left:calc(50% + 6px);
+    width:5px; height:16px;
+    background:#c7bab4;
+    border-radius:0 0 4px 4px;
+  }
+  .candle-plate{
+    position:absolute;
+    bottom:0; left:50%;
+    width:46px; height:6px;
+    transform:translateX(-50%);
+    background:linear-gradient(180deg, var(--burgundy-light), var(--burgundy));
+    border-radius:50%;
+    box-shadow:0 3px 10px rgba(0,0,0,0.5);
+  }
+
+  @keyframes flicker{
+    0%,100%{ transform:translateX(-50%) scaleY(1) rotate(0deg); opacity:1;}
+    25%{ transform:translateX(-52%) scaleY(1.05) rotate(-2deg); opacity:0.92;}
+    50%{ transform:translateX(-48%) scaleY(0.96) rotate(1.5deg); opacity:1;}
+    75%{ transform:translateX(-51%) scaleY(1.02) rotate(-1deg); opacity:0.95;}
+  }
+  @keyframes glow-pulse{
+    0%,100%{ opacity:0.7; }
+    50%{ opacity:1; }
+  }
+
+  .site-title{
+    font-family:'Aref Ruqaa', serif;
+    font-weight:700;
+    font-size:2.1rem;
+    letter-spacing:0.5px;
+    color:var(--grey-light);
+    margin:0;
+    text-shadow:0 0 18px rgba(184,51,74,0.25);
+  }
+  .site-subtitle{
+    font-family:'Tajawal', sans-serif;
+    font-weight:300;
+    font-size:0.85rem;
+    letter-spacing:4px;
+    color:var(--grey-mid);
+    margin:6px 0 0;
+  }
+
+  /* ---------- code bar ---------- */
+  .code-bar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-top:16px;
+    font-size:0.82rem;
+    color:var(--grey-mid);
+  }
+  .code-value{
+    color:var(--red-glow);
+    font-weight:700;
+    letter-spacing:2px;
+    background:rgba(140,31,44,0.12);
+    border:1px solid var(--panel-border);
+    padding:3px 12px;
+    border-radius:14px;
+    font-family:'Tajawal', sans-serif;
+  }
+  .copy-btn{
+    background:none;
+    border:none;
+    color:var(--grey-mid);
+    cursor:pointer;
+    padding:4px;
+    display:flex;
+    align-items:center;
+    transition:color .2s;
+  }
+  .copy-btn:hover{ color:var(--red-glow); }
+  .copy-btn svg{ width:15px; height:15px; }
+
+  .mode-notice{
+    max-width:460px;
+    margin:12px auto 0;
+    text-align:center;
+    font-size:0.72rem;
+    line-height:1.8;
+    color:var(--grey-faint);
+    padding:9px 16px;
+    border:1px dashed var(--panel-border);
+    border-radius:8px;
+  }
+
+  /* ---------- tabs ---------- */
+  .tabs-bar{
+    width:100%;
+    max-width:640px;
+    margin-top:36px;
+  }
+  .tabs-row{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:2px;
+  }
+  .tab-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-shrink:0;
+    background:transparent;
+    border:1px solid var(--panel-border);
+    border-bottom:none;
+    color:var(--grey-mid);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.82rem;
+    padding:9px 10px 9px 18px;
+    border-radius:14px 14px 0 0;
+    cursor:pointer;
+    transition:all .22s ease;
+    white-space:nowrap;
+  }
+  .tab-item.active{
+    color:#fff;
+    background:var(--bg-panel);
+    border-color:var(--panel-border);
+  }
+  .tab-item:hover{ color:var(--grey-light); }
+  .tab-label{ cursor:text; }
+  .tab-label-input{
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--red-glow);
+    color:#fff;
+    font-family:'Tajawal', sans-serif;
+    font-size:0.82rem;
+    width:6.5em;
+    outline:none;
+    padding:0;
+  }
+  .tab-close{
+    background:none;
+    border:none;
+    color:var(--grey-faint);
+    cursor:pointer;
+    font-size:0.95rem;
+    line-height:1;
+    padding:0 2px;
+    transition:color .2s;
+  }
+  .tab-close:hover{ color:var(--red-glow); }
+  .tab-add-btn{
+    flex-shrink:0;
+    width:34px; height:34px;
+    border-radius:50%;
+    background:transparent;
+    border:1px dashed var(--grey-faint);
+    color:var(--grey-mid);
+    cursor:pointer;
+    font-size:1.1rem;
+    line-height:1;
+    align-self:center;
+    transition:all .22s ease;
+  }
+  .tab-add-btn:hover{
+    border-color:var(--red-dark);
+    color:var(--red-glow);
+  }
+
+  .code-entry{
+    display:flex;
+    gap:8px;
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition:max-height .35s ease, opacity .3s ease, margin-top .3s ease;
+    margin-top:0;
+  }
+  .code-entry.open{
+    max-height:70px;
+    opacity:1;
+    margin-top:12px;
+  }
+  .code-entry-input{
+    flex:1;
+    background:var(--bg-panel);
+    border:1px solid var(--panel-border);
+    border-radius:20px;
+    color:var(--grey-light);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.85rem;
+    padding:9px 16px;
+    outline:none;
+    letter-spacing:2px;
+    text-align:center;
+    transition:border-color .25s;
+  }
+  .code-entry-input:focus{ border-color:var(--burgundy-light); }
+  .code-entry-btn, .code-entry-cancel{
+    font-family:'Tajawal', sans-serif;
+    font-size:0.8rem;
+    padding:9px 18px;
+    border-radius:20px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .code-entry-btn{
+    background:linear-gradient(135deg, var(--red-dark), var(--burgundy));
+    color:#f2e8ea;
+    border:none;
+  }
+  .code-entry-cancel{
+    background:transparent;
+    border:1px solid var(--panel-border);
+    color:var(--grey-mid);
+  }
+  .code-entry-cancel:hover{ color:var(--grey-light); }
+
+  /* ---------- quote stage ---------- */
+  .quote-frame{
+    position:relative;
+    width:100%;
+    max-width:640px;
+    margin-top:0;
+    padding:50px 40px 46px;
+    background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
+    border:1px solid var(--panel-border);
+    border-radius:0 6px 6px 6px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.03);
+    min-height:260px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+
+  .quote-frame::before,
+  .quote-frame::after{
+    position:absolute;
+    font-family:'Aref Ruqaa', serif;
+    font-size:5.5rem;
+    color:var(--burgundy);
+    opacity:0.35;
+    line-height:1;
+    pointer-events:none;
+    user-select:none;
+  }
+  .quote-frame::before{
+    content:'”';
+    top:6px; right:22px;
+  }
+  .quote-frame::after{
+    content:'“';
+    bottom:-4px; left:22px;
+    opacity:0.22;
+  }
+
+  .quote-text{
+    font-family:'Amiri', serif;
+    font-size:clamp(1.35rem, 3vw, 1.85rem);
+    line-height:2;
+    color:var(--ink);
+    max-width:520px;
+    transition:opacity .5s ease, filter .5s ease, transform .5s ease;
+  }
+
+  .quote-text.dissolve{
+    opacity:0;
+    filter:blur(6px);
+    transform:translateY(6px);
+  }
+
+  .quote-index{
+    margin-top:28px;
+    font-size:0.8rem;
+    color:var(--grey-mid);
+    letter-spacing:1px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-family:'Tajawal', sans-serif;
+  }
+
+  .quote-index-input{
+    width:2.6em;
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--grey-faint);
+    color:var(--grey-light);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.85rem;
+    text-align:center;
+    letter-spacing:1px;
+    padding:1px 2px;
+    outline:none;
+    transition:border-color .25s, color .25s;
+    -moz-appearance:textfield;
+    appearance:textfield;
+  }
+  .quote-index-input:hover{
+    color:var(--grey-light);
+    border-color:var(--grey-mid);
+  }
+  .quote-index-input:focus{
+    border-color:var(--red-glow);
+    color:#fff;
+  }
+
+  .quote-delete{
+    margin-top:14px;
+    background:none;
+    border:1px solid var(--grey-faint);
+    color:var(--grey-mid);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.75rem;
+    padding:5px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:border-color .25s, color .25s;
+  }
+  .quote-delete:hover{
+    border-color:var(--red-dark);
+    color:var(--red-glow);
+  }
+
+  /* ---------- nav controls ---------- */
+  .nav-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    margin-top:26px;
+    width:100%;
+    max-width:640px;
+  }
+
+  .nav-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:transparent;
+    border:1px solid var(--panel-border);
+    color:var(--grey-light);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.9rem;
+    font-weight:500;
+    padding:10px 20px;
+    border-radius:30px;
+    cursor:pointer;
+    transition:all .25s ease;
+  }
+  .nav-btn:hover{
+    border-color:var(--red-dark);
+    background:rgba(140,31,44,0.12);
+    color:#fff;
+    box-shadow:0 0 16px rgba(184,51,74,0.18);
+  }
+  .nav-btn svg{ width:14px; height:14px; flex-shrink:0; }
+
+  .dots{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:center;
+    max-width:120px;
+  }
+  .dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--grey-faint);
+    transition:background .3s, transform .3s;
+    cursor:pointer;
+  }
+  .dot.active{
+    background:var(--red-glow);
+    transform:scale(1.5);
+  }
+
+  /* ---------- add quote ---------- */
+  .add-section{
+    width:100%;
+    max-width:640px;
+    margin-top:52px;
+  }
+
+  .add-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    background:none;
+    border:none;
+    border-top:1px solid var(--panel-border);
+    padding-top:22px;
+    color:var(--grey-mid);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.9rem;
+    cursor:pointer;
+    letter-spacing:0.5px;
+    transition:color .25s;
+  }
+  .add-toggle:hover{ color:var(--grey-light); }
+  .add-toggle .plus{
+    display:inline-block;
+    transition:transform .3s ease;
+    color:var(--red-glow);
+    font-size:1.1rem;
+  }
+  .add-toggle.open .plus{ transform:rotate(45deg); }
+
+  .add-form{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .45s ease, opacity .35s ease, margin-top .35s ease;
+    opacity:0;
+    margin-top:0;
+  }
+  .add-form.open{
+    max-height:320px;
+    opacity:1;
+    margin-top:20px;
+  }
+
+  .add-form textarea{
+    width:100%;
+    min-height:96px;
+    background:var(--bg-panel);
+    border:1px solid var(--panel-border);
+    border-radius:6px;
+    color:var(--grey-light);
+    font-family:'Amiri', serif;
+    font-size:1.05rem;
+    line-height:1.9;
+    padding:16px;
+    resize:vertical;
+    outline:none;
+    transition:border-color .25s;
+  }
+  .add-form textarea:focus{
+    border-color:var(--burgundy-light);
+  }
+  .add-form textarea::placeholder{
+    color:var(--grey-faint);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.9rem;
+  }
+
+  .add-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:12px;
+  }
+
+  .btn-primary{
+    background:linear-gradient(135deg, var(--red-dark), var(--burgundy));
+    color:#f2e8ea;
+    border:none;
+    font-family:'Tajawal', sans-serif;
+    font-weight:500;
+    font-size:0.9rem;
+    padding:10px 26px;
+    border-radius:26px;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(140,31,44,0.35);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 8px 22px rgba(140,31,44,0.5);
+  }
+  .btn-primary:active{ transform:translateY(0); }
+  .btn-primary:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+    transform:none;
+  }
+
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(8,5,6,0.72);
+    backdrop-filter:blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:30;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .modal-overlay.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .modal-box{
+    width:90%;
+    max-width:360px;
+    background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
+    border:1px solid var(--panel-border);
+    border-radius:10px;
+    padding:30px 26px 22px;
+    text-align:center;
+    box-shadow:0 24px 60px rgba(0,0,0,0.55);
+    transform:translateY(14px) scale(0.97);
+    transition:transform .3s ease;
+  }
+  .modal-overlay.show .modal-box{
+    transform:translateY(0) scale(1);
+  }
+  .modal-message{
+    font-family:'Tajawal', sans-serif;
+    font-weight:500;
+    font-size:1.08rem;
+    line-height:1.9;
+    color:var(--grey-light);
+    margin:0 0 24px;
+  }
+  .modal-actions{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+  }
+  .modal-btn{
+    font-family:'Tajawal', sans-serif;
+    font-size:0.9rem;
+    font-weight:500;
+    padding:10px 24px;
+    border-radius:24px;
+    cursor:pointer;
+    border:1px solid var(--panel-border);
+    transition:all .22s ease;
+  }
+  .modal-btn.confirm{
+    background:linear-gradient(135deg, var(--red-dark), var(--burgundy));
+    color:#f2e8ea;
+    border:none;
+    box-shadow:0 6px 18px rgba(140,31,44,0.35);
+  }
+  .modal-btn.confirm:hover{
+    transform:translateY(-1px);
+    box-shadow:0 8px 22px rgba(140,31,44,0.5);
+  }
+  .modal-btn.cancel{
+    background:transparent;
+    color:var(--grey-mid);
+  }
+  .modal-btn.cancel:hover{
+    color:var(--grey-light);
+    border-color:var(--grey-mid);
+  }
+
+  .toast{
+    position:fixed;
+    bottom:26px; left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--bg-panel-2);
+    border:1px solid var(--burgundy-light);
+    color:var(--grey-light);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.85rem;
+    padding:12px 22px;
+    border-radius:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s ease, transform .35s ease;
+    z-index:20;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .loading-state{
+    color:var(--grey-mid);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.9rem;
+    letter-spacing:1px;
+  }
+
+  footer{
+    margin-top:50px;
+    text-align:center;
+    font-family:'Tajawal', sans-serif;
+    font-size:0.72rem;
+    letter-spacing:2px;
+    color:var(--grey-faint);
+  }
+
+  @media (max-width:520px){
+    .quote-frame{ padding:46px 22px 36px; }
+    .quote-frame::before,.quote-frame::after{ font-size:3.6rem; }
+    .nav-row{ gap:12px; }
+    .nav-btn{ padding:9px 14px; font-size:0.8rem; }
+    .code-entry{ flex-wrap:wrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .flame, .glow{ animation:none; }
+    .quote-text{ transition:opacity .2s ease; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="brand">
+    <div class="candle-wrap">
+      <div class="glow"></div>
+      <div class="flame"></div>
+      <div class="wick"></div>
+      <div class="candle-body"></div>
+      <div class="drip"></div>
+      <div class="candle-plate"></div>
+    </div>
+    <h1 class="site-title">الفنانه كنزي</h1>
+    <p class="site-subtitle">م ق و ل ا ت</p>
+
+    <div class="code-bar">
+      <span class="code-label">كودك:</span>
+      <span class="code-value" id="codeValue">......</span>
+      <button class="copy-btn" id="copyCodeBtn" title="نسخ الكود">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+      </button>
+    </div>
+    <p class="mode-notice" id="modeNotice">انسخي كودك وابعتيه للي حابه يشوف أقوالك</p>
+  </div>
+
+  <div class="tabs-bar">
+    <div class="tabs-row" id="tabsRow">
+      <button class="tab-add-btn" id="tabAddBtn" title="افتحي كود تاني">+</button>
+    </div>
+    <div class="code-entry" id="codeEntryForm">
+      <input type="text" id="codeEntryInput" class="code-entry-input" placeholder="اكتبي الكود هنا" maxlength="8">
+      <button class="code-entry-btn" id="codeEntrySubmit">افتحي</button>
+      <button class="code-entry-cancel" id="codeEntryCancel">إلغاء</button>
+    </div>
+  </div>
+
+  <div class="quote-frame" id="quoteFrame">
+    <div class="quote-text loading-state" id="quoteText">...تُضاء الشمعة</div>
+    <div class="quote-index">
+      <input type="text" inputmode="numeric" class="quote-index-input" id="quoteIndexInput" maxlength="3">
+      <span id="quoteTotal"></span>
+    </div>
+    <button class="quote-delete" id="deleteBtn">حذف هذه المقولة</button>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="nextBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+      التالي
+    </button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn" id="prevBtn">
+      السابق
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+
+  <div class="add-section" id="addSection">
+    <button class="add-toggle" id="addToggle">
+      <span class="plus">+</span> أضيفي مقولة جديدة
+    </button>
+    <div class="add-form" id="addForm">
+      <textarea id="quoteInput" placeholder="اكتبي ما يعتمر في القلب هنا…" maxlength="400"></textarea>
+      <div class="add-actions">
+        <button class="btn-primary" id="submitBtn">أضف المقولة</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>الفنانه كنزي © مقولات</footer>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <p class="modal-message">هل تريدين حذف هذه المقولة؟</p>
+    <div class="modal-actions">
+      <button class="modal-btn confirm" id="modalConfirm">نعم، احذف</button>
+      <button class="modal-btn cancel" id="modalCancel">لا، تراجع</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  const DEFAULT_QUOTES = [
+    "أشدُّ ما يؤلم في الغياب، أن يترك المرء خلفه حضورًا لا يغادر الذاكرة.",
+    "كنتُ أظن أن الحزن عابر، حتى صار جزءًا من ملامح أيامي.",
+    "ليس كل صمتٍ سلامًا؛ أحيانًا يكون الصمت آخر ما تبقّى من قدرة الإنسان على الكلام.",
+    "ثمة أشخاص لا يرحلون حين يغادرون، بل يبقون فينا على هيئة وجع.",
+    "أرهقني انتظار شيءٍ أدركتُ متأخرًا أنه لم يكن ليأتي.",
+    "أقسى أنواع الوحدة أن تكون محاطًا بالجميع، ولا تجد قلبًا يشبه مأواك.",
+    "لم يؤلمني رحيلك بقدر ما آلمني أنني كنتُ أراك وطنًا، بينما كنتَ تراني عابرًا.",
+    "تغيّر كل شيء حين أصبح ما كان يسعدني يذكّرني بما فقدت.",
+    "أحيانًا لا نحتاج إلى من ينقذنا، بل إلى من يفهم لماذا غرقنا.",
+    "صار قلبي يتقن الصمت، بعدما عجز الكلام عن شرح ما يحدث داخله.",
+    "ما بيني وبين الحزن ليس علاقة عابرة؛ إنه طريقٌ طال بي حتى نسيتُ أين كانت بدايته.",
+    "أفتقد نسخةً مني كانت تعرف كيف تفرح دون أن تخشى أن ينتهي الفرح.",
+    "ربما لم يكن الفراق هو المؤلم، بل اكتشاف أنني كنتُ أعيش على أملٍ لم يكن متبادلًا.",
+    "هناك وجعٌ لا يُرى، لكنه يغيّر الإنسان من الداخل حتى لا يعود كما كان.",
+    "كنتُ أبحث عن سببٍ لانطفائي، ثم أدركت أنني أمضيت طويلًا أضيء لأجل شخصٍ لم يرَ النور أصلًا."
+  ];
+
+  // =========================================================
+  // ⚠️ خطوة الربط بقاعدة البيانات:
+  // بعد ما تجهّزي مشروعك على Supabase (شوفي الدليل)، هتلاقي فيه
+  // Project URL و anon public key من Project Settings → API.
+  // حطيهم بدل القيمتين دول بالظبط، بعدين ارفعي الملف تاني.
+  // =========================================================
+  const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+  const isSupabaseConfigured = !SUPABASE_URL.startsWith('YOUR_') && !SUPABASE_ANON_KEY.startsWith('YOUR_');
+  let sb = null;
+  if(isSupabaseConfigured && window.supabase && window.supabase.createClient){
+    try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }catch(e){ sb = null; }
+  }
+
+  // ---- state ----
+  let tabs = [];          // [{code, collectionId, label, quotes:[{id,text}], editable}]
+  let activeTabIndex = 0;
+  let currentIndex = 0;
+
+  // ---- DOM refs ----
+  const quoteText = document.getElementById('quoteText');
+  const quoteIndexInput = document.getElementById('quoteIndexInput');
+  const quoteTotal = document.getElementById('quoteTotal');
+  const dotsEl = document.getElementById('dots');
+  const deleteBtn = document.getElementById('deleteBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const addSection = document.getElementById('addSection');
+  const addToggle = document.getElementById('addToggle');
+  const addForm = document.getElementById('addForm');
+  const quoteInput = document.getElementById('quoteInput');
+  const submitBtn = document.getElementById('submitBtn');
+  const toast = document.getElementById('toast');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalConfirm = document.getElementById('modalConfirm');
+  const modalCancel = document.getElementById('modalCancel');
+  const codeValueEl = document.getElementById('codeValue');
+  const copyCodeBtn = document.getElementById('copyCodeBtn');
+  const modeNotice = document.getElementById('modeNotice');
+  const tabsRow = document.getElementById('tabsRow');
+  const tabAddBtn = document.getElementById('tabAddBtn');
+  const codeEntryForm = document.getElementById('codeEntryForm');
+  const codeEntryInput = document.getElementById('codeEntryInput');
+  const codeEntrySubmit = document.getElementById('codeEntrySubmit');
+  const codeEntryCancel = document.getElementById('codeEntryCancel');
+
+  function activeTab(){ return tabs[activeTabIndex]; }
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), 2200);
+  }
+
+  function askConfirm(){
+    return new Promise((resolve) => {
+      modalOverlay.classList.add('show');
+      const cleanup = (result) => {
+        modalOverlay.classList.remove('show');
+        modalConfirm.removeEventListener('click', onConfirm);
+        modalCancel.removeEventListener('click', onCancel);
+        modalOverlay.removeEventListener('click', onOverlay);
+        document.removeEventListener('keydown', onKey);
+        resolve(result);
+      };
+      const onConfirm = () => cleanup(true);
+      const onCancel = () => cleanup(false);
+      const onOverlay = (e) => { if(e.target === modalOverlay) cleanup(false); };
+      const onKey = (e) => { if(e.key === 'Escape') cleanup(false); };
+      modalConfirm.addEventListener('click', onConfirm);
+      modalCancel.addEventListener('click', onCancel);
+      modalOverlay.addEventListener('click', onOverlay);
+      document.addEventListener('keydown', onKey);
+    });
+  }
+
+  function toArabicDigits(num){
+    const map = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    return String(num).split('').map(d => map[+d] ?? d).join('');
+  }
+  function fromArabicDigits(str){
+    const map = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+    return String(str).split('').map(c => map[c] ?? c).join('');
+  }
+  function genCode(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let out = '';
+    for(let i=0;i<6;i++) out += chars[Math.floor(Math.random()*chars.length)];
+    return out;
+  }
+  function genId(){
+    if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+  }
+
+  // =========================================================
+  // DATA LAYER — نفس الواجهة، تنفيذين مختلفين
+  // =========================================================
+  const localData = {
+    async ensureMine(){
+      let code = localStorage.getItem('kenzy-my-code');
+      let quotes = null;
+      const raw = localStorage.getItem('kenzy-my-quotes');
+      if(raw){ try{ quotes = JSON.parse(raw); }catch(e){ quotes = null; } }
+      if(!code || !Array.isArray(quotes)){
+        code = code || genCode();
+        quotes = DEFAULT_QUOTES.map(t => ({id: genId(), text: t}));
+        localStorage.setItem('kenzy-my-code', code);
+        localStorage.setItem('kenzy-my-quotes', JSON.stringify(quotes));
+      }
+      return {code, collectionId:null, quotes};
+    },
+    async openByCode(){ return null; }, // مش متاحة غير لما نتربط بقاعدة بيانات حقيقية
+    async addQuote(tab, text){
+      const q = {id: genId(), text};
+      tab.quotes.push(q);
+      localStorage.setItem('kenzy-my-quotes', JSON.stringify(tab.quotes));
+      return q;
+    },
+    async deleteQuote(tab, quoteId){
+      tab.quotes = tab.quotes.filter(q => q.id !== quoteId);
+      localStorage.setItem('kenzy-my-quotes', JSON.stringify(tab.quotes));
+    }
+  };
+
+  const remoteData = {
+    async fetchQuotes(collectionId){
+      const {data, error} = await sb.from('quotes').select('id, text').eq('collection_id', collectionId).order('created_at', {ascending:true});
+      if(error) throw error;
+      return (data||[]).map(q => ({id:q.id, text:q.text}));
+    },
+    async ensureMine(){
+      let code = localStorage.getItem('kenzy-my-code');
+      if(code){
+        const {data} = await sb.from('collections').select('id, code').eq('code', code).maybeSingle();
+        if(data){
+          const quotes = await this.fetchQuotes(data.id);
+          return {code:data.code, collectionId:data.id, quotes};
+        }
+      }
+      const newCode = genCode();
+      const {data: col, error} = await sb.from('collections').insert({code:newCode}).select().single();
+      if(error) throw error;
+      const rows = DEFAULT_QUOTES.map(t => ({collection_id: col.id, text:t}));
+      const {data: seeded, error: seedErr} = await sb.from('quotes').insert(rows).select();
+      if(seedErr) throw seedErr;
+      localStorage.setItem('kenzy-my-code', col.code);
+      return {code: col.code, collectionId: col.id, quotes:(seeded||[]).map(q=>({id:q.id, text:q.text}))};
+    },
+    async openByCode(code){
+      const {data, error} = await sb.from('collections').select('id, code, owner_name').eq('code', code).maybeSingle();
+      if(error || !data) return null;
+      const quotes = await this.fetchQuotes(data.id);
+      return {code:data.code, collectionId:data.id, label:data.owner_name || data.code, quotes};
+    },
+    async addQuote(tab, text){
+      const {data, error} = await sb.from('quotes').insert({collection_id: tab.collectionId, text}).select().single();
+      if(error) throw error;
+      const q = {id:data.id, text:data.text};
+      tab.quotes.push(q);
+      return q;
+    },
+    async deleteQuote(tab, quoteId){
+      const {error} = await sb.from('quotes').delete().eq('id', quoteId);
+      if(error) throw error;
+      tab.quotes = tab.quotes.filter(q => q.id !== quoteId);
+    }
+  };
+
+  const store = sb ? remoteData : localData;
+
+  // =========================================================
+  // TABS
+  // =========================================================
+  function renderTabs(){
+    tabsRow.querySelectorAll('.tab-item').forEach(el => el.remove());
+    tabs.forEach((t, i) => {
+      const item = document.createElement('div');
+      item.className = 'tab-item' + (i === activeTabIndex ? ' active' : '');
+
+      const label = document.createElement('span');
+      label.className = 'tab-label';
+      label.textContent = t.label || (i === 0 ? 'أقوالي' : t.code);
+      item.appendChild(label);
+
+      if(i !== 0){
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'tab-close';
+        closeBtn.textContent = '×';
+        closeBtn.title = 'إغلاق التاب';
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeTab(i);
+        });
+        item.appendChild(closeBtn);
+      }
+
+      item.addEventListener('click', () => switchTab(i));
+      label.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        startRenameTab(i, item, label);
+      });
+
+      tabsRow.insertBefore(item, tabAddBtn);
+    });
+  }
+
+  function startRenameTab(i, item, label){
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'tab-label-input';
+    input.value = tabs[i].label || (i === 0 ? 'أقوالي' : tabs[i].code);
+    input.maxLength = 20;
+    item.replaceChild(input, label);
+    input.focus();
+    input.select();
+
+    const commit = () => {
+      const val = input.value.trim();
+      tabs[i].label = val || (i === 0 ? 'أقوالي' : tabs[i].code);
+      if(i !== 0) persistSharedCodesList();
+      renderTabs();
+    };
+    input.addEventListener('click', (e) => e.stopPropagation());
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); input.blur(); }
+      if(e.key === 'Escape'){ e.preventDefault(); renderTabs(); }
+    });
+    input.addEventListener('blur', commit);
+  }
+
+  function closeTab(i){
+    if(i === 0) return; // ماينفعش تقفلي تاب "أقوالي"
+    const wasActive = (i === activeTabIndex);
+    tabs.splice(i, 1);
+    if(wasActive){ activeTabIndex = 0; currentIndex = 0; }
+    else if(activeTabIndex > i){ activeTabIndex -= 1; }
+    persistSharedCodesList();
+    renderTabs();
+    updateEditableUI();
+    render(false);
+  }
+
+  function updateCodeBar(){
+    codeValueEl.textContent = tabs[0] ? tabs[0].code : '......';
+  }
+
+  function updateEditableUI(){
+    const editable = activeTab().editable;
+    addSection.style.display = editable ? '' : 'none';
+  }
+
+  function switchTab(i){
+    activeTabIndex = i;
+    currentIndex = 0;
+    renderTabs();
+    updateEditableUI();
+    render(false);
+  }
+
+  async function persistSharedCodesList(){
+    const items = tabs.slice(1).map(t => ({
+      code: t.code,
+      label: (t.label && t.label !== t.code) ? t.label : null
+    }));
+    try{ localStorage.setItem('kenzy-shared-codes', JSON.stringify(items)); }catch(e){}
+  }
+
+  tabAddBtn.addEventListener('click', () => {
+    const open = codeEntryForm.classList.toggle('open');
+    if(open) setTimeout(()=> codeEntryInput.focus(), 200);
+  });
+  codeEntryCancel.addEventListener('click', () => {
+    codeEntryForm.classList.remove('open');
+    codeEntryInput.value = '';
+  });
+  codeEntryInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); codeEntrySubmit.click(); }
+  });
+  codeEntrySubmit.addEventListener('click', async () => {
+    const code = codeEntryInput.value.trim().toUpperCase();
+    if(!code) return;
+    if(!sb){
+      showToast('لازم نربط الموقع بقاعدة البيانات الأول عشان الميزة دي تشتغل');
+      return;
+    }
+    const existingIdx = tabs.findIndex(t => t.code === code);
+    if(existingIdx !== -1){
+      switchTab(existingIdx);
+      codeEntryForm.classList.remove('open');
+      codeEntryInput.value = '';
+      return;
+    }
+    codeEntrySubmit.disabled = true;
+    try{
+      const result = await remoteData.openByCode(code);
+      if(!result){ showToast('الكود ده مش موجود'); return; }
+      tabs.push({code:result.code, collectionId:result.collectionId, label:result.label, quotes:result.quotes, editable:false});
+      await persistSharedCodesList();
+      switchTab(tabs.length - 1);
+      codeEntryForm.classList.remove('open');
+      codeEntryInput.value = '';
+    }catch(err){
+      showToast('حصل خطأ، حاولي تاني');
+    }finally{
+      codeEntrySubmit.disabled = false;
+    }
+  });
+
+  async function copyToClipboard(text){
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    }catch(e){ /* falls through to the legacy method below */ }
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    }catch(e){
+      return false;
+    }
+  }
+
+  copyCodeBtn.addEventListener('click', async () => {
+    const code = tabs[0] ? tabs[0].code : '';
+    if(!code) return;
+    const ok = await copyToClipboard(code);
+    showToast(ok ? 'اتنسخ الكود' : ('كودك: ' + code));
+  });
+
+  // =========================================================
+  // RENDER
+  // =========================================================
+  function renderDots(){
+    dotsEl.innerHTML = '';
+    const list = activeTab().quotes;
+    const max = 24;
+    const show = Math.min(list.length, max);
+    for(let i=0;i<show;i++){
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === currentIndex ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function render(animate){
+    const tab = activeTab();
+    const list = tab.quotes;
+    const hasQuotes = list.length > 0;
+    const text = hasQuotes ? list[currentIndex].text : 'لا توجد مقولات هنا بعد';
+
+    const doRender = () => {
+      quoteText.classList.remove('loading-state');
+      quoteText.textContent = text;
+      quoteIndexInput.value = hasQuotes ? toArabicDigits(currentIndex+1) : '';
+      quoteTotal.textContent = hasQuotes ? ('/ ' + toArabicDigits(list.length)) : '';
+      deleteBtn.style.display = (tab.editable && hasQuotes) ? 'inline-block' : 'none';
+      requestAnimationFrame(()=> quoteText.classList.remove('dissolve'));
+      renderDots();
+    };
+
+    if(animate){
+      quoteText.classList.add('dissolve');
+      setTimeout(doRender, 260);
+    } else {
+      doRender();
+    }
+  }
+
+  function goTo(i){
+    const list = activeTab().quotes;
+    if(list.length === 0) return;
+    currentIndex = ((i % list.length) + list.length) % list.length;
+    render(true);
+  }
+
+  nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
+  prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+
+  document.addEventListener('keydown', (e) => {
+    if(document.activeElement === quoteIndexInput) return;
+    if(document.activeElement === codeEntryInput) return;
+    if(e.key === 'ArrowLeft') goTo(currentIndex - 1);
+    if(e.key === 'ArrowRight') goTo(currentIndex + 1);
+  });
+
+  function commitIndexInput(){
+    const list = activeTab().quotes;
+    const raw = fromArabicDigits(quoteIndexInput.value.trim());
+    const n = parseInt(raw, 10);
+    if(!isNaN(n) && n >= 1 && n <= list.length){
+      goTo(n - 1);
+    } else if(list.length){
+      quoteIndexInput.value = toArabicDigits(currentIndex + 1);
+    }
+  }
+  quoteIndexInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); quoteIndexInput.blur(); }
+  });
+  quoteIndexInput.addEventListener('blur', commitIndexInput);
+  quoteIndexInput.addEventListener('click', () => quoteIndexInput.select());
+
+  // =========================================================
+  // ADD / DELETE
+  // =========================================================
+  addToggle.addEventListener('click', () => {
+    const open = addForm.classList.toggle('open');
+    addToggle.classList.toggle('open', open);
+    if(open) setTimeout(()=> quoteInput.focus(), 200);
+  });
+
+  submitBtn.addEventListener('click', async () => {
+    const tab = activeTab();
+    if(!tab.editable) return;
+    const val = quoteInput.value.trim();
+    if(!val) return;
+    submitBtn.disabled = true;
+    try{
+      await store.addQuote(tab, val);
+      quoteInput.value = '';
+      addForm.classList.remove('open');
+      addToggle.classList.remove('open');
+      goTo(tab.quotes.length - 1);
+      showToast('أُضيئت مقولتك في الصفحة');
+    }catch(err){
+      showToast('تعذّر الحفظ، حاولي تاني');
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+
+  deleteBtn.addEventListener('click', async () => {
+    const tab = activeTab();
+    if(!tab.editable || tab.quotes.length === 0) return;
+    const ok = await askConfirm();
+    if(!ok) return;
+    const q = tab.quotes[currentIndex];
+    try{
+      await store.deleteQuote(tab, q.id);
+    }catch(err){
+      showToast('تعذّر الحذف'); return;
+    }
+    if(tab.quotes.length === 0){
+      render(false);
+      return;
+    }
+    goTo(Math.min(currentIndex, tab.quotes.length - 1));
+    showToast('حُذفت المقولة');
+  });
+
+  // =========================================================
+  // INIT
+  // =========================================================
+  async function init(){
+    try{
+      const mine = await store.ensureMine();
+      tabs = [{code:mine.code, collectionId:mine.collectionId, label:'أقوالي', quotes:mine.quotes, editable:true}];
+    }catch(err){
+      console.error(err);
+      tabs = [{code:'------', collectionId:null, label:'أقوالي', quotes:DEFAULT_QUOTES.map(t=>({id:genId(), text:t})), editable:true}];
+      showToast('تعذّر الاتصال بقاعدة البيانات، الوضع محلي مؤقتًا');
+    }
+
+    if(sb){
+      let savedItems = [];
+      try{ savedItems = JSON.parse(localStorage.getItem('kenzy-shared-codes') || '[]'); }catch(e){}
+      for(const item of savedItems){
+        const code = (typeof item === 'string') ? item : item.code;
+        const customLabel = (typeof item === 'object' && item) ? item.label : null;
+        try{
+          const result = await remoteData.openByCode(code);
+          if(result) tabs.push({code:result.code, collectionId:result.collectionId, label: customLabel || result.label, quotes:result.quotes, editable:false});
+        }catch(e){ /* تخطي الكود اللي فشل تحميله */ }
+      }
+    }
+
+    activeTabIndex = 0;
+    currentIndex = 0;
+    renderTabs();
+    updateCodeBar();
+    updateEditableUI();
+    render(false);
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
