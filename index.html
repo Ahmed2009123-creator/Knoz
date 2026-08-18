@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الفنانه كنزي — مقولات</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -338,7 +340,7 @@
   .tab-item{
     display:flex;
     align-items:center;
-    gap:6px;
+    gap:4px;
     flex-shrink:0;
     background:transparent;
     border:1px solid var(--panel-border);
@@ -346,7 +348,7 @@
     color:var(--grey-mid);
     font-family:'Tajawal', sans-serif;
     font-size:0.82rem;
-    padding:9px 10px 9px 18px;
+    padding:11px 8px 11px 20px;
     border-radius:14px 14px 0 0;
     cursor:pointer;
     transition:all .22s ease;
@@ -358,26 +360,31 @@
     border-color:var(--panel-border);
   }
   .tab-item:hover{ color:var(--grey-light); }
-  .tab-label{ cursor:text; }
-  .tab-label-input{
-    background:transparent;
+  .tab-label{ max-width:140px; overflow:hidden; text-overflow:ellipsis; }
+  .tab-alias{
+    background:none;
     border:none;
-    border-bottom:1px solid var(--red-glow);
-    color:#fff;
-    font-family:'Tajawal', sans-serif;
-    font-size:0.82rem;
-    width:6.5em;
-    outline:none;
-    padding:0;
+    color:var(--grey-faint);
+    cursor:pointer;
+    font-size:0.8rem;
+    line-height:1;
+    padding:8px;
+    margin:-8px 0;
+    display:flex;
+    align-items:center;
+    transition:color .2s;
   }
+  .tab-alias:hover{ color:var(--red-glow); }
+  .tab-alias svg{ width:13px; height:13px; }
   .tab-close{
     background:none;
     border:none;
     color:var(--grey-faint);
     cursor:pointer;
-    font-size:0.95rem;
+    font-size:1rem;
     line-height:1;
-    padding:0 2px;
+    padding:8px;
+    margin:-8px 0;
     transition:color .2s;
   }
   .tab-close:hover{ color:var(--red-glow); }
@@ -540,8 +547,36 @@
     color:#fff;
   }
 
-  .quote-delete{
+  .quote-actions{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
     margin-top:14px;
+  }
+
+  .quote-copy{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:none;
+    border:1px solid var(--grey-faint);
+    color:var(--grey-mid);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.75rem;
+    padding:5px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:border-color .25s, color .25s;
+  }
+  .quote-copy svg{ width:12px; height:12px; }
+  .quote-copy:hover{
+    border-color:var(--burgundy-light);
+    color:var(--grey-light);
+  }
+
+  .quote-delete{
+    margin-top:0;
     background:none;
     border:1px solid var(--grey-faint);
     color:var(--grey-mid);
@@ -908,7 +943,13 @@
       <input type="text" inputmode="numeric" class="quote-index-input" id="quoteIndexInput" maxlength="3">
       <span id="quoteTotal"></span>
     </div>
-    <button class="quote-delete" id="deleteBtn">حذف هذه المقولة</button>
+    <div class="quote-actions">
+      <button class="quote-copy" id="copyQuoteBtn" title="نسخ المقولة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        نسخ
+      </button>
+      <button class="quote-delete" id="deleteBtn">حذف هذه المقولة</button>
+    </div>
   </div>
 
   <div class="nav-row">
@@ -944,6 +985,17 @@
     <div class="modal-actions">
       <button class="modal-btn confirm" id="modalConfirm">نعم، احذف</button>
       <button class="modal-btn cancel" id="modalCancel">لا، تراجع</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="aliasModalOverlay">
+  <div class="modal-box">
+    <p class="modal-message">اسم مستعار لصاحب الأقوال دي</p>
+    <input type="text" id="aliasModalInput" class="username-input" placeholder="اسم مستعار (سيبه فاضي عشان يرجع الاسم الأصلي)" maxlength="20">
+    <div class="modal-actions">
+      <button class="modal-btn confirm" id="aliasModalSave">حفظ</button>
+      <button class="modal-btn cancel" id="aliasModalCancel">إلغاء</button>
     </div>
   </div>
 </div>
@@ -1029,6 +1081,11 @@
   const usernameInput = document.getElementById('usernameInput');
   const usernameSaveBtn = document.getElementById('usernameSaveBtn');
   const usernameHint = document.getElementById('usernameHint');
+  const copyQuoteBtn = document.getElementById('copyQuoteBtn');
+  const aliasModalOverlay = document.getElementById('aliasModalOverlay');
+  const aliasModalInput = document.getElementById('aliasModalInput');
+  const aliasModalSave = document.getElementById('aliasModalSave');
+  const aliasModalCancel = document.getElementById('aliasModalCancel');
 
   function activeTab(){ return tabs[activeTabIndex]; }
 
@@ -1167,10 +1224,20 @@
 
       const label = document.createElement('span');
       label.className = 'tab-label';
-      label.textContent = t.label || (i === 0 ? 'أقوالي' : t.code);
+      label.textContent = i === 0 ? 'أقوالي' : (t.customLabel || t.defaultLabel || t.code);
       item.appendChild(label);
 
       if(i !== 0){
+        const aliasBtn = document.createElement('button');
+        aliasBtn.className = 'tab-alias';
+        aliasBtn.title = 'اسم مستعار';
+        aliasBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+        aliasBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openAliasModal(i);
+        });
+        item.appendChild(aliasBtn);
+
         const closeBtn = document.createElement('button');
         closeBtn.className = 'tab-close';
         closeBtn.textContent = '×';
@@ -1183,38 +1250,35 @@
       }
 
       item.addEventListener('click', () => switchTab(i));
-      label.addEventListener('dblclick', (e) => {
-        e.stopPropagation();
-        startRenameTab(i, item, label);
-      });
-
       tabsRow.insertBefore(item, tabAddBtn);
     });
   }
 
-  function startRenameTab(i, item, label){
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'tab-label-input';
-    input.value = tabs[i].label || (i === 0 ? 'أقوالي' : tabs[i].code);
-    input.maxLength = 20;
-    item.replaceChild(input, label);
-    input.focus();
-    input.select();
-
-    const commit = () => {
-      const val = input.value.trim();
-      tabs[i].label = val || (i === 0 ? 'أقوالي' : tabs[i].code);
-      if(i !== 0) persistSharedCodesList();
-      renderTabs();
-    };
-    input.addEventListener('click', (e) => e.stopPropagation());
-    input.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter'){ e.preventDefault(); input.blur(); }
-      if(e.key === 'Escape'){ e.preventDefault(); renderTabs(); }
-    });
-    input.addEventListener('blur', commit);
+  let aliasEditingIndex = null;
+  function openAliasModal(i){
+    aliasEditingIndex = i;
+    aliasModalInput.value = tabs[i].customLabel || '';
+    aliasModalOverlay.classList.add('show');
+    setTimeout(()=> aliasModalInput.focus(), 200);
   }
+  function closeAliasModal(){
+    aliasModalOverlay.classList.remove('show');
+    aliasEditingIndex = null;
+  }
+  aliasModalCancel.addEventListener('click', closeAliasModal);
+  aliasModalOverlay.addEventListener('click', (e) => { if(e.target === aliasModalOverlay) closeAliasModal(); });
+  aliasModalInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); aliasModalSave.click(); }
+    if(e.key === 'Escape'){ e.preventDefault(); closeAliasModal(); }
+  });
+  aliasModalSave.addEventListener('click', () => {
+    if(aliasEditingIndex === null) return;
+    const val = aliasModalInput.value.trim();
+    tabs[aliasEditingIndex].customLabel = val || null;
+    persistSharedCodesList();
+    renderTabs();
+    closeAliasModal();
+  });
 
   async function closeTab(i){
     if(i === 0) return; // ماينفعش تقفلي تاب "أقوالي"
@@ -1230,6 +1294,7 @@
     updateEditableUI();
     render(false);
     sendNotification(tab.collectionId, visitorDisplayName() + ' شال التاب بتاع أقوالك من عنده');
+    unregisterWatcher(tab.collectionId);
   }
 
   function updateCodeBar(){
@@ -1252,7 +1317,7 @@
   async function persistSharedCodesList(){
     const items = tabs.slice(1).map(t => ({
       code: t.code,
-      label: (t.label && t.label !== t.code) ? t.label : null
+      customLabel: t.customLabel || null
     }));
     try{ localStorage.setItem('kenzy-shared-codes', JSON.stringify(items)); }catch(e){}
   }
@@ -1275,6 +1340,37 @@
     if(!sb || !recipientCollectionId) return;
     try{ await sb.from('notifications').insert({collection_id: recipientCollectionId, message}); }
     catch(e){ /* إشعار فشل مش مشكلة حرجة، منكملش الشغل عشانه */ }
+  }
+
+  async function registerWatcher(ownerCollectionId){
+    if(!sb || !tabs[0] || !tabs[0].collectionId || !ownerCollectionId) return;
+    try{
+      await sb.from('watchers').upsert(
+        {owner_collection_id: ownerCollectionId, watcher_collection_id: tabs[0].collectionId},
+        {onConflict: 'owner_collection_id,watcher_collection_id'}
+      );
+    }catch(e){ /* تجاهل، مش حرج */ }
+  }
+
+  async function unregisterWatcher(ownerCollectionId){
+    if(!sb || !tabs[0] || !tabs[0].collectionId || !ownerCollectionId) return;
+    try{
+      await sb.from('watchers').delete()
+        .eq('owner_collection_id', ownerCollectionId)
+        .eq('watcher_collection_id', tabs[0].collectionId);
+    }catch(e){ /* تجاهل */ }
+  }
+
+  async function notifyWatchers(message){
+    if(!sb || !tabs[0] || !tabs[0].collectionId) return;
+    try{
+      const {data, error} = await sb.from('watchers').select('watcher_collection_id').eq('owner_collection_id', tabs[0].collectionId);
+      if(error || !data) return;
+      const name = visitorDisplayName();
+      for(const w of data){
+        sendNotification(w.watcher_collection_id, name + ' ' + message);
+      }
+    }catch(e){ /* تجاهل */ }
   }
 
   async function refreshNotifBadgeCount(){
@@ -1433,12 +1529,13 @@
     try{
       const result = await remoteData.openByCode(code);
       if(!result){ showToast('الكود ده مش موجود'); return; }
-      tabs.push({code:result.code, collectionId:result.collectionId, label:result.label, quotes:result.quotes, editable:false});
+      tabs.push({code:result.code, collectionId:result.collectionId, defaultLabel:result.label, customLabel:null, quotes:result.quotes, editable:false});
       await persistSharedCodesList();
       switchTab(tabs.length - 1);
       codeEntryForm.classList.remove('open');
       codeEntryInput.value = '';
       sendNotification(result.collectionId, visitorDisplayName() + ' دخل على أقاويلك');
+      registerWatcher(result.collectionId);
     }catch(err){
       showToast('حصل خطأ، حاول تاني');
     }finally{
@@ -1506,6 +1603,7 @@
       quoteIndexInput.value = hasQuotes ? toArabicDigits(currentIndex+1) : '';
       quoteTotal.textContent = hasQuotes ? ('/ ' + toArabicDigits(list.length)) : '';
       deleteBtn.style.display = (tab.editable && hasQuotes) ? 'inline-block' : 'none';
+      copyQuoteBtn.style.display = hasQuotes ? 'inline-flex' : 'none';
       requestAnimationFrame(()=> quoteText.classList.remove('dissolve'));
       renderDots();
     };
@@ -1573,6 +1671,7 @@
       addToggle.classList.remove('open');
       goTo(tab.quotes.length - 1);
       showToast('أُضيئت مقولتك في الصفحة');
+      notifyWatchers('أضاف مقولة جديدة');
     }catch(err){
       showToast('تعذّر الحفظ، حاول تاني');
     }finally{
@@ -1591,6 +1690,7 @@
     }catch(err){
       showToast('تعذّر الحذف'); return;
     }
+    notifyWatchers('حذف مقولة');
     if(tab.quotes.length === 0){
       render(false);
       return;
@@ -1599,18 +1699,25 @@
     showToast('حُذفت المقولة');
   });
 
+  copyQuoteBtn.addEventListener('click', async () => {
+    const list = activeTab().quotes;
+    if(!list.length) return;
+    const ok = await copyToClipboard(list[currentIndex].text);
+    showToast(ok ? 'اتنسخت المقولة' : 'تعذّر النسخ');
+  });
+
   // =========================================================
   // INIT
   // =========================================================
   async function init(){
     try{
       const mine = await store.ensureMine();
-      tabs = [{code:mine.code, collectionId:mine.collectionId, label:'أقوالي', quotes:mine.quotes, editable:true}];
+      tabs = [{code:mine.code, collectionId:mine.collectionId, defaultLabel:'أقوالي', customLabel:null, quotes:mine.quotes, editable:true}];
       myUsername = mine.username || null;
       myUsernameUpdatedAt = mine.usernameUpdatedAt || null;
     }catch(err){
       console.error(err);
-      tabs = [{code:'------', collectionId:null, label:'أقوالي', quotes:DEFAULT_QUOTES.map(t=>({id:genId(), text:t})), editable:true}];
+      tabs = [{code:'------', collectionId:null, defaultLabel:'أقوالي', customLabel:null, quotes:DEFAULT_QUOTES.map(t=>({id:genId(), text:t})), editable:true}];
       showToast('تعذّر الاتصال بقاعدة البيانات، الوضع محلي مؤقتًا');
     }
 
@@ -1619,10 +1726,13 @@
       try{ savedItems = JSON.parse(localStorage.getItem('kenzy-shared-codes') || '[]'); }catch(e){}
       for(const item of savedItems){
         const code = (typeof item === 'string') ? item : item.code;
-        const customLabel = (typeof item === 'object' && item) ? item.label : null;
+        const customLabel = (typeof item === 'object' && item) ? item.customLabel : null;
         try{
           const result = await remoteData.openByCode(code);
-          if(result) tabs.push({code:result.code, collectionId:result.collectionId, label: customLabel || result.label, quotes:result.quotes, editable:false});
+          if(result){
+            tabs.push({code:result.code, collectionId:result.collectionId, defaultLabel:result.label, customLabel:customLabel || null, quotes:result.quotes, editable:false});
+            registerWatcher(result.collectionId);
+          }
         }catch(e){ /* تخطي الكود اللي فشل تحميله */ }
       }
     }
