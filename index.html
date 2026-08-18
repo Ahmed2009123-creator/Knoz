@@ -874,7 +874,7 @@
       <div class="panel-inner">
         <div class="panel-header">اسم المستخدم</div>
         <div class="panel-body">
-          <input type="text" id="usernameInput" class="username-input" placeholder="اختاري اسم مستخدم" maxlength="20">
+          <input type="text" id="usernameInput" class="username-input" placeholder="اختار اسم مستخدم" maxlength="20">
           <button class="btn-primary panel-save-btn" id="usernameSaveBtn">حفظ الاسم</button>
           <p class="username-hint" id="usernameHint"></p>
         </div>
@@ -888,16 +888,16 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
       </button>
     </div>
-    <p class="mode-notice" id="modeNotice">انسخي كودك وابعتيه للي حابه يشوف أقوالك</p>
+    <p class="mode-notice" id="modeNotice">انسخ كودك وابعته للي حابب يشوف أقوالك</p>
   </div>
 
   <div class="tabs-bar">
     <div class="tabs-row" id="tabsRow">
-      <button class="tab-add-btn" id="tabAddBtn" title="افتحي كود تاني">+</button>
+      <button class="tab-add-btn" id="tabAddBtn" title="افتح كود تاني">+</button>
     </div>
     <div class="code-entry" id="codeEntryForm">
-      <input type="text" id="codeEntryInput" class="code-entry-input" placeholder="اكتبي الكود هنا" maxlength="8">
-      <button class="code-entry-btn" id="codeEntrySubmit">افتحي</button>
+      <input type="text" id="codeEntryInput" class="code-entry-input" placeholder="اكتب الكود هنا" maxlength="8">
+      <button class="code-entry-btn" id="codeEntrySubmit">افتح</button>
       <button class="code-entry-cancel" id="codeEntryCancel">إلغاء</button>
     </div>
   </div>
@@ -925,10 +925,10 @@
 
   <div class="add-section" id="addSection">
     <button class="add-toggle" id="addToggle">
-      <span class="plus">+</span> أضيفي مقولة جديدة
+      <span class="plus">+</span> أضف مقولة جديدة
     </button>
     <div class="add-form" id="addForm">
-      <textarea id="quoteInput" placeholder="اكتبي ما يعتمر في القلب هنا…" maxlength="400"></textarea>
+      <textarea id="quoteInput" placeholder="اكتب ما يعتمر في القلب هنا…" maxlength="400"></textarea>
       <div class="add-actions">
         <button class="btn-primary" id="submitBtn">أضف المقولة</button>
       </div>
@@ -940,7 +940,7 @@
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
-    <p class="modal-message" id="modalMessage">هل تريدين حذف هذه المقولة؟</p>
+    <p class="modal-message" id="modalMessage">هل تريد حذف هذه المقولة؟</p>
     <div class="modal-actions">
       <button class="modal-btn confirm" id="modalConfirm">نعم، احذف</button>
       <button class="modal-btn cancel" id="modalCancel">لا، تراجع</button>
@@ -1040,7 +1040,7 @@
 
   function askConfirm(message){
     return new Promise((resolve) => {
-      modalMessageEl.textContent = message || 'هل أنتِ متأكدة؟';
+      modalMessageEl.textContent = message || 'هل أنت متأكد؟';
       modalOverlay.classList.add('show');
       const cleanup = (result) => {
         modalOverlay.classList.remove('show');
@@ -1218,7 +1218,7 @@
 
   async function closeTab(i){
     if(i === 0) return; // ماينفعش تقفلي تاب "أقوالي"
-    const ok = await askConfirm('هل تريدين إغلاق هذا التاب؟');
+    const ok = await askConfirm('هل تريد إغلاق هذا التاب؟');
     if(!ok) return;
     const tab = tabs[i];
     const wasActive = (i === activeTabIndex);
@@ -1306,7 +1306,7 @@
       closeBtn.textContent = '×';
       closeBtn.title = 'حذف الإشعار';
       closeBtn.addEventListener('click', async () => {
-        const ok = await askConfirm('هل تريدين حذف هذا الإشعار؟');
+        const ok = await askConfirm('هل تريد حذف هذا الإشعار؟');
         if(!ok) return;
         try{
           await sb.from('notifications').delete().eq('id', n.id);
@@ -1359,7 +1359,7 @@
     usernameSaveBtn.disabled = false;
     const daysLeft = usernameCooldownDaysLeft();
     if(daysLeft > 0){
-      usernameHint.textContent = 'تقدري تغيّري اسمك تاني بعد ' + toArabicDigits(daysLeft) + ' يوم';
+      usernameHint.textContent = 'تقدر تغيّر اسمك تاني بعد ' + toArabicDigits(daysLeft) + ' يوم';
     } else {
       usernameHint.textContent = 'الاسم ده هيظهر للي بيدخلوا يشوفوا أقوالك بالكود';
     }
@@ -1383,10 +1383,10 @@
     if(!sb){ showToast('لازم نربط الموقع بقاعدة البيانات الأول'); return; }
     const daysLeft = usernameCooldownDaysLeft();
     if(daysLeft > 0){
-      showToast('تقدري تغيّري اسمك بعد ' + toArabicDigits(daysLeft) + ' يوم');
+      showToast('تقدر تغيّر اسمك بعد ' + toArabicDigits(daysLeft) + ' يوم');
       return;
     }
-    const ok = await askConfirm('هل تريدين حفظ هذا الاسم فعلاً؟');
+    const ok = await askConfirm('هل تريد حفظ هذا الاسم فعلاً؟');
     if(!ok) return;
     usernameSaveBtn.disabled = true;
     try{
@@ -1398,7 +1398,7 @@
       showToast('اتحفظ اسمك');
       updateUsernameHint();
     }catch(err){
-      showToast('تعذّر الحفظ، حاولي تاني');
+      showToast('تعذّر الحفظ، حاول تاني');
     }finally{
       usernameSaveBtn.disabled = false;
     }
@@ -1440,7 +1440,7 @@
       codeEntryInput.value = '';
       sendNotification(result.collectionId, visitorDisplayName() + ' دخل على أقاويلك');
     }catch(err){
-      showToast('حصل خطأ، حاولي تاني');
+      showToast('حصل خطأ، حاول تاني');
     }finally{
       codeEntrySubmit.disabled = false;
     }
@@ -1574,7 +1574,7 @@
       goTo(tab.quotes.length - 1);
       showToast('أُضيئت مقولتك في الصفحة');
     }catch(err){
-      showToast('تعذّر الحفظ، حاولي تاني');
+      showToast('تعذّر الحفظ، حاول تاني');
     }finally{
       submitBtn.disabled = false;
     }
@@ -1583,7 +1583,7 @@
   deleteBtn.addEventListener('click', async () => {
     const tab = activeTab();
     if(!tab.editable || tab.quotes.length === 0) return;
-    const ok = await askConfirm('هل تريدين حذف هذه المقولة؟');
+    const ok = await askConfirm('هل تريد حذف هذه المقولة؟');
     if(!ok) return;
     const q = tab.quotes[currentIndex];
     try{
