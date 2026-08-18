@@ -255,6 +255,37 @@
   }
   .notif-close:hover{ color:var(--red-glow); }
 
+  .viewer-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 0;
+    border-bottom:1px solid var(--panel-border);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.82rem;
+    color:var(--grey-light);
+  }
+  .viewer-item:last-child{ border-bottom:none; }
+  .viewer-item.blocked{ color:var(--grey-faint); }
+  .viewer-toggle{
+    flex-shrink:0;
+    background:none;
+    border:1px solid var(--panel-border);
+    color:var(--grey-mid);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.72rem;
+    padding:4px 12px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .viewer-toggle:hover{ border-color:var(--red-dark); color:var(--red-glow); }
+  .viewer-toggle.is-blocked{
+    border-color:var(--burgundy-light);
+    color:var(--red-glow);
+  }
+
   .username-input{
     width:100%;
     background:var(--bg-panel-2);
@@ -893,6 +924,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <span class="badge" id="notifBadge" style="display:none;">0</span>
       </button>
+      <button class="icon-btn" id="viewersBtn" title="مين فاتح أقوالك">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
       <button class="icon-btn" id="usernameBtn" title="اسم المستخدم">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
@@ -902,6 +936,13 @@
       <div class="panel-inner">
         <div class="panel-header">الإشعارات</div>
         <div class="panel-body" id="notifList"><p class="panel-empty">لا يوجد إشعارات جديدة</p></div>
+      </div>
+    </div>
+
+    <div class="panel" id="viewersPanel">
+      <div class="panel-inner">
+        <div class="panel-header">مين فاتح أقوالك</div>
+        <div class="panel-body" id="viewersList"><p class="panel-empty">محدش فاتح أقوالك لسه</p></div>
       </div>
     </div>
 
@@ -1076,6 +1117,9 @@
   const notifBadge = document.getElementById('notifBadge');
   const notifPanel = document.getElementById('notifPanel');
   const notifList = document.getElementById('notifList');
+  const viewersBtn = document.getElementById('viewersBtn');
+  const viewersPanel = document.getElementById('viewersPanel');
+  const viewersList = document.getElementById('viewersList');
   const usernameBtn = document.getElementById('usernameBtn');
   const usernamePanel = document.getElementById('usernamePanel');
   const usernameInput = document.getElementById('usernameInput');
@@ -1194,8 +1238,9 @@
     async openByCode(code){
       const {data, error} = await sb.from('collections').select('id, code, owner_name').eq('code', code).maybeSingle();
       if(error || !data) return null;
-      const quotes = await this.fetchQuotes(data.id);
-      return {code:data.code, collectionId:data.id, label:data.owner_name || data.code, quotes};
+      const blocked = await isBlockedBy(data.id);
+      const quotes = blocked ? [] : await this.fetchQuotes(data.id);
+      return {code:data.code, collectionId:data.id, label:data.owner_name || data.code, quotes, blocked};
     },
     async addQuote(tab, text){
       const {data, error} = await sb.from('quotes').insert({collection_id: tab.collectionId, text}).select().single();
@@ -1306,11 +1351,19 @@
     addSection.style.display = editable ? '' : 'none';
   }
 
-  function switchTab(i){
+  async function switchTab(i){
     activeTabIndex = i;
     currentIndex = 0;
     renderTabs();
     updateEditableUI();
+    const tab = tabs[i];
+    if(!tab.editable && sb){
+      try{
+        const blocked = await isBlockedBy(tab.collectionId);
+        tab.blocked = blocked;
+        tab.quotes = blocked ? [] : await remoteData.fetchQuotes(tab.collectionId);
+      }catch(e){ /* لو فشل التحديث، هنعرض آخر نسخة كانت متاحة */ }
+    }
     render(false);
   }
 
@@ -1331,9 +1384,20 @@
 
   function closeAllPanels(){
     notifPanel.classList.remove('open');
+    viewersPanel.classList.remove('open');
     usernamePanel.classList.remove('open');
     notifBtn.classList.remove('active');
+    viewersBtn.classList.remove('active');
     usernameBtn.classList.remove('active');
+  }
+
+  async function isBlockedBy(ownerCollectionId){
+    if(!sb || !tabs[0] || !tabs[0].collectionId || !ownerCollectionId) return false;
+    try{
+      const {data, error} = await sb.from('watchers').select('blocked').eq('owner_collection_id', ownerCollectionId).eq('watcher_collection_id', tabs[0].collectionId).maybeSingle();
+      if(error || !data) return false;
+      return !!data.blocked;
+    }catch(e){ return false; }
   }
 
   async function sendNotification(recipientCollectionId, message){
@@ -1440,6 +1504,68 @@
     }
   });
 
+  viewersBtn.addEventListener('click', async () => {
+    const willOpen = !viewersPanel.classList.contains('open');
+    closeAllPanels();
+    if(willOpen){
+      viewersPanel.classList.add('open');
+      viewersBtn.classList.add('active');
+      await loadViewers();
+    }
+  });
+
+  function renderViewers(rows, colMap){
+    viewersList.innerHTML = '';
+    rows.forEach(r => {
+      const col = colMap[r.watcher_collection_id];
+      const name = col ? (col.owner_name || col.code) : 'مستخدم';
+      const item = document.createElement('div');
+      item.className = 'viewer-item' + (r.blocked ? ' blocked' : '');
+      const span = document.createElement('span');
+      span.textContent = name + (r.blocked ? ' (محجوب)' : '');
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'viewer-toggle' + (r.blocked ? ' is-blocked' : '');
+      toggleBtn.textContent = r.blocked ? 'إلغاء الحجب' : 'حجب';
+      toggleBtn.addEventListener('click', async () => {
+        const newBlocked = !r.blocked;
+        const msg = newBlocked ? 'هل تريد حجب هذا الشخص عن مشاهدة أقوالك؟' : 'هل تريد إلغاء الحجب عن هذا الشخص؟';
+        const ok = await askConfirm(msg);
+        if(!ok) return;
+        try{
+          await sb.from('watchers').update({blocked:newBlocked}).eq('id', r.id);
+          showToast(newBlocked ? 'اتحجب' : 'اتشال الحجب');
+          loadViewers();
+        }catch(e){ showToast('تعذّر التحديث'); }
+      });
+      item.appendChild(span);
+      item.appendChild(toggleBtn);
+      viewersList.appendChild(item);
+    });
+  }
+
+  async function loadViewers(){
+    if(!sb || !tabs[0] || !tabs[0].collectionId){
+      viewersList.innerHTML = '<p class="panel-empty">الميزة دي هتشتغل لما الموقع يترابط بقاعدة البيانات</p>';
+      return;
+    }
+    try{
+      const {data: rows, error} = await sb.from('watchers').select('id, watcher_collection_id, blocked').eq('owner_collection_id', tabs[0].collectionId).order('created_at', {ascending:false});
+      if(error) throw error;
+      if(!rows || rows.length === 0){
+        viewersList.innerHTML = '<p class="panel-empty">محدش فاتح أقوالك لسه</p>';
+        return;
+      }
+      const ids = rows.map(r => r.watcher_collection_id);
+      const {data: cols, error: colErr} = await sb.from('collections').select('id, code, owner_name').in('id', ids);
+      if(colErr) throw colErr;
+      const colMap = {};
+      (cols || []).forEach(c => { colMap[c.id] = c; });
+      renderViewers(rows, colMap);
+    }catch(err){
+      viewersList.innerHTML = '<p class="panel-empty">تعذّر تحميل القائمة</p>';
+    }
+  }
+
   function usernameCooldownDaysLeft(){
     if(!myUsernameUpdatedAt) return 0;
     const diffDays = (Date.now() - new Date(myUsernameUpdatedAt).getTime()) / (1000*60*60*24);
@@ -1529,7 +1655,7 @@
     try{
       const result = await remoteData.openByCode(code);
       if(!result){ showToast('الكود ده مش موجود'); return; }
-      tabs.push({code:result.code, collectionId:result.collectionId, defaultLabel:result.label, customLabel:null, quotes:result.quotes, editable:false});
+      tabs.push({code:result.code, collectionId:result.collectionId, defaultLabel:result.label, customLabel:null, quotes:result.quotes, editable:false, blocked:!!result.blocked});
       await persistSharedCodesList();
       switchTab(tabs.length - 1);
       codeEntryForm.classList.remove('open');
@@ -1595,15 +1721,17 @@
     const tab = activeTab();
     const list = tab.quotes;
     const hasQuotes = list.length > 0;
-    const text = hasQuotes ? list[currentIndex].text : 'لا توجد مقولات هنا بعد';
+    const text = tab.blocked
+      ? 'صاحبة الأقوال دي حجبتك عن مشاهدتها 🚫'
+      : (hasQuotes ? list[currentIndex].text : 'لا توجد مقولات هنا بعد');
 
     const doRender = () => {
       quoteText.classList.remove('loading-state');
       quoteText.textContent = text;
-      quoteIndexInput.value = hasQuotes ? toArabicDigits(currentIndex+1) : '';
-      quoteTotal.textContent = hasQuotes ? ('/ ' + toArabicDigits(list.length)) : '';
+      quoteIndexInput.value = (hasQuotes && !tab.blocked) ? toArabicDigits(currentIndex+1) : '';
+      quoteTotal.textContent = (hasQuotes && !tab.blocked) ? ('/ ' + toArabicDigits(list.length)) : '';
       deleteBtn.style.display = (tab.editable && hasQuotes) ? 'inline-block' : 'none';
-      copyQuoteBtn.style.display = hasQuotes ? 'inline-flex' : 'none';
+      copyQuoteBtn.style.display = (hasQuotes && !tab.blocked) ? 'inline-flex' : 'none';
       requestAnimationFrame(()=> quoteText.classList.remove('dissolve'));
       renderDots();
     };
@@ -1730,7 +1858,7 @@
         try{
           const result = await remoteData.openByCode(code);
           if(result){
-            tabs.push({code:result.code, collectionId:result.collectionId, defaultLabel:result.label, customLabel:customLabel || null, quotes:result.quotes, editable:false});
+            tabs.push({code:result.code, collectionId:result.collectionId, defaultLabel:result.label, customLabel:customLabel || null, quotes:result.quotes, editable:false, blocked:!!result.blocked});
             registerWatcher(result.collectionId);
           }
         }catch(e){ /* تخطي الكود اللي فشل تحميله */ }
