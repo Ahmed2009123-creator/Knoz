@@ -1139,9 +1139,11 @@
     setTimeout(()=> toast.classList.remove('show'), 2200);
   }
 
-  function askConfirm(message){
+  function askConfirm(message, confirmLabel, cancelLabel){
     return new Promise((resolve) => {
       modalMessageEl.textContent = message || 'هل أنت متأكد؟';
+      modalConfirm.textContent = confirmLabel || 'نعم، تأكيد';
+      modalCancel.textContent = cancelLabel || 'لا، تراجع';
       modalOverlay.classList.add('show');
       const cleanup = (result) => {
         modalOverlay.classList.remove('show');
@@ -1327,7 +1329,7 @@
 
   async function closeTab(i){
     if(i === 0) return; // ماينفعش تقفلي تاب "أقوالي"
-    const ok = await askConfirm('هل تريد إغلاق هذا التاب؟');
+    const ok = await askConfirm('هل تريد إغلاق هذا التاب؟', 'نعم، أغلق', 'لا، تراجع');
     if(!ok) return;
     const tab = tabs[i];
     const wasActive = (i === activeTabIndex);
@@ -1466,7 +1468,7 @@
       closeBtn.textContent = '×';
       closeBtn.title = 'حذف الإشعار';
       closeBtn.addEventListener('click', async () => {
-        const ok = await askConfirm('هل تريد حذف هذا الإشعار؟');
+        const ok = await askConfirm('هل تريد حذف هذا الإشعار؟', 'نعم، احذف', 'لا، تراجع');
         if(!ok) return;
         try{
           await sb.from('notifications').delete().eq('id', n.id);
@@ -1529,7 +1531,7 @@
       toggleBtn.addEventListener('click', async () => {
         const newBlocked = !r.blocked;
         const msg = newBlocked ? 'هل تريد حجب هذا الشخص عن مشاهدة أقوالك؟' : 'هل تريد إلغاء الحجب عن هذا الشخص؟';
-        const ok = await askConfirm(msg);
+        const ok = await askConfirm(msg, newBlocked ? 'نعم، احجب' : 'نعم، ألغِ الحجب', 'لا، تراجع');
         if(!ok) return;
         try{
           await sb.from('watchers').update({blocked:newBlocked}).eq('id', r.id);
@@ -1608,7 +1610,7 @@
       showToast('تقدر تغيّر اسمك بعد ' + toArabicDigits(daysLeft) + ' يوم');
       return;
     }
-    const ok = await askConfirm('هل تريد حفظ هذا الاسم فعلاً؟');
+    const ok = await askConfirm('هل تريد حفظ هذا الاسم فعلاً؟', 'نعم، احفظ', 'لا، تراجع');
     if(!ok) return;
     usernameSaveBtn.disabled = true;
     try{
@@ -1722,7 +1724,7 @@
     const list = tab.quotes;
     const hasQuotes = list.length > 0;
     const text = tab.blocked
-      ? 'مالك هذه الاقوال قام بحجبك 🚫'
+      ? 'صاحب الأقوال هذه حجبك عن مشاهدتها 🚫'
       : (hasQuotes ? list[currentIndex].text : 'لا توجد مقولات هنا بعد');
 
     const doRender = () => {
@@ -1810,7 +1812,7 @@
   deleteBtn.addEventListener('click', async () => {
     const tab = activeTab();
     if(!tab.editable || tab.quotes.length === 0) return;
-    const ok = await askConfirm('هل تريد حذف هذه المقولة؟');
+    const ok = await askConfirm('هل تريد حذف هذه المقولة؟', 'نعم، احذف', 'لا، تراجع');
     if(!ok) return;
     const q = tab.quotes[currentIndex];
     try{
