@@ -152,6 +152,132 @@
     margin:6px 0 0;
   }
 
+  /* ---------- icon row (notifications / username) ---------- */
+  .icon-row{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    margin-top:16px;
+  }
+  .icon-btn{
+    position:relative;
+    width:38px; height:38px;
+    border-radius:50%;
+    background:var(--bg-panel);
+    border:1px solid var(--panel-border);
+    color:var(--grey-mid);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:all .22s ease;
+  }
+  .icon-btn:hover{ color:var(--red-glow); border-color:var(--red-dark); }
+  .icon-btn.active{ color:#fff; border-color:var(--burgundy-light); background:var(--bg-panel-2); }
+  .icon-btn svg{ width:17px; height:17px; }
+  .badge{
+    position:absolute;
+    top:-4px; left:-4px;
+    min-width:16px; height:16px;
+    padding:0 3px;
+    border-radius:8px;
+    background:var(--red-dark);
+    color:#fff;
+    font-size:0.62rem;
+    font-family:'Tajawal', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+  }
+
+  .panel{
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition:max-height .4s ease, opacity .3s ease, margin-top .3s ease;
+  }
+  .panel.open{
+    max-height:320px;
+    opacity:1;
+    margin-top:14px;
+    overflow-y:auto;
+  }
+  .panel-inner{
+    background:var(--bg-panel);
+    border:1px solid var(--panel-border);
+    border-radius:10px;
+    padding:16px 18px;
+    text-align:right;
+  }
+  .panel-header{
+    font-family:'Tajawal', sans-serif;
+    font-weight:700;
+    font-size:0.88rem;
+    color:var(--grey-light);
+    margin-bottom:10px;
+  }
+  .panel-empty{
+    font-family:'Tajawal', sans-serif;
+    font-size:0.8rem;
+    color:var(--grey-faint);
+    text-align:center;
+    margin:10px 0;
+  }
+  .notif-item{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 0;
+    border-bottom:1px solid var(--panel-border);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.82rem;
+    color:var(--grey-light);
+    line-height:1.7;
+  }
+  .notif-item:last-child{ border-bottom:none; }
+  .notif-close{
+    flex-shrink:0;
+    background:none;
+    border:none;
+    color:var(--grey-faint);
+    cursor:pointer;
+    font-size:0.95rem;
+    line-height:1;
+    padding:2px 4px;
+    transition:color .2s;
+  }
+  .notif-close:hover{ color:var(--red-glow); }
+
+  .username-input{
+    width:100%;
+    background:var(--bg-panel-2);
+    border:1px solid var(--panel-border);
+    border-radius:20px;
+    color:var(--grey-light);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.9rem;
+    padding:10px 16px;
+    outline:none;
+    text-align:center;
+    transition:border-color .25s;
+    margin-bottom:12px;
+  }
+  .username-input:focus{ border-color:var(--burgundy-light); }
+  .username-hint{
+    font-family:'Tajawal', sans-serif;
+    font-size:0.72rem;
+    color:var(--grey-faint);
+    text-align:center;
+    margin:10px 0 0;
+    line-height:1.7;
+  }
+  .panel-save-btn{ width:100%; }
+
   /* ---------- code bar ---------- */
   .code-bar{
     display:flex;
@@ -727,6 +853,34 @@
     <h1 class="site-title">الفنانه كنزي</h1>
     <p class="site-subtitle">م ق و ل ا ت</p>
 
+    <div class="icon-row">
+      <button class="icon-btn" id="notifBtn" title="الإشعارات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="badge" id="notifBadge" style="display:none;">0</span>
+      </button>
+      <button class="icon-btn" id="usernameBtn" title="اسم المستخدم">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+    </div>
+
+    <div class="panel" id="notifPanel">
+      <div class="panel-inner">
+        <div class="panel-header">الإشعارات</div>
+        <div class="panel-body" id="notifList"><p class="panel-empty">لا يوجد إشعارات جديدة</p></div>
+      </div>
+    </div>
+
+    <div class="panel" id="usernamePanel">
+      <div class="panel-inner">
+        <div class="panel-header">اسم المستخدم</div>
+        <div class="panel-body">
+          <input type="text" id="usernameInput" class="username-input" placeholder="اختاري اسم مستخدم" maxlength="20">
+          <button class="btn-primary panel-save-btn" id="usernameSaveBtn">حفظ الاسم</button>
+          <p class="username-hint" id="usernameHint"></p>
+        </div>
+      </div>
+    </div>
+
     <div class="code-bar">
       <span class="code-label">كودك:</span>
       <span class="code-value" id="codeValue">......</span>
@@ -786,7 +940,7 @@
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
-    <p class="modal-message">هل تريدين حذف هذه المقولة؟</p>
+    <p class="modal-message" id="modalMessage">هل تريدين حذف هذه المقولة؟</p>
     <div class="modal-actions">
       <button class="modal-btn confirm" id="modalConfirm">نعم، احذف</button>
       <button class="modal-btn cancel" id="modalCancel">لا، تراجع</button>
@@ -836,6 +990,8 @@
   let tabs = [];          // [{code, collectionId, label, quotes:[{id,text}], editable}]
   let activeTabIndex = 0;
   let currentIndex = 0;
+  let myUsername = null;
+  let myUsernameUpdatedAt = null;
 
   // ---- DOM refs ----
   const quoteText = document.getElementById('quoteText');
@@ -863,6 +1019,16 @@
   const codeEntryInput = document.getElementById('codeEntryInput');
   const codeEntrySubmit = document.getElementById('codeEntrySubmit');
   const codeEntryCancel = document.getElementById('codeEntryCancel');
+  const modalMessageEl = document.getElementById('modalMessage');
+  const notifBtn = document.getElementById('notifBtn');
+  const notifBadge = document.getElementById('notifBadge');
+  const notifPanel = document.getElementById('notifPanel');
+  const notifList = document.getElementById('notifList');
+  const usernameBtn = document.getElementById('usernameBtn');
+  const usernamePanel = document.getElementById('usernamePanel');
+  const usernameInput = document.getElementById('usernameInput');
+  const usernameSaveBtn = document.getElementById('usernameSaveBtn');
+  const usernameHint = document.getElementById('usernameHint');
 
   function activeTab(){ return tabs[activeTabIndex]; }
 
@@ -872,8 +1038,9 @@
     setTimeout(()=> toast.classList.remove('show'), 2200);
   }
 
-  function askConfirm(){
+  function askConfirm(message){
     return new Promise((resolve) => {
+      modalMessageEl.textContent = message || 'هل أنتِ متأكدة؟';
       modalOverlay.classList.add('show');
       const cleanup = (result) => {
         modalOverlay.classList.remove('show');
@@ -928,7 +1095,7 @@
         localStorage.setItem('kenzy-my-code', code);
         localStorage.setItem('kenzy-my-quotes', JSON.stringify(quotes));
       }
-      return {code, collectionId:null, quotes};
+      return {code, collectionId:null, quotes, username:null, usernameUpdatedAt:null};
     },
     async openByCode(){ return null; }, // مش متاحة غير لما نتربط بقاعدة بيانات حقيقية
     async addQuote(tab, text){
@@ -952,10 +1119,10 @@
     async ensureMine(){
       let code = localStorage.getItem('kenzy-my-code');
       if(code){
-        const {data} = await sb.from('collections').select('id, code').eq('code', code).maybeSingle();
+        const {data} = await sb.from('collections').select('id, code, owner_name, username_updated_at').eq('code', code).maybeSingle();
         if(data){
           const quotes = await this.fetchQuotes(data.id);
-          return {code:data.code, collectionId:data.id, quotes};
+          return {code:data.code, collectionId:data.id, quotes, username:data.owner_name, usernameUpdatedAt:data.username_updated_at};
         }
       }
       const newCode = genCode();
@@ -965,7 +1132,7 @@
       const {data: seeded, error: seedErr} = await sb.from('quotes').insert(rows).select();
       if(seedErr) throw seedErr;
       localStorage.setItem('kenzy-my-code', col.code);
-      return {code: col.code, collectionId: col.id, quotes:(seeded||[]).map(q=>({id:q.id, text:q.text}))};
+      return {code: col.code, collectionId: col.id, quotes:(seeded||[]).map(q=>({id:q.id, text:q.text})), username:null, usernameUpdatedAt:null};
     },
     async openByCode(code){
       const {data, error} = await sb.from('collections').select('id, code, owner_name').eq('code', code).maybeSingle();
@@ -1049,8 +1216,11 @@
     input.addEventListener('blur', commit);
   }
 
-  function closeTab(i){
+  async function closeTab(i){
     if(i === 0) return; // ماينفعش تقفلي تاب "أقوالي"
+    const ok = await askConfirm('هل تريدين إغلاق هذا التاب؟');
+    if(!ok) return;
+    const tab = tabs[i];
     const wasActive = (i === activeTabIndex);
     tabs.splice(i, 1);
     if(wasActive){ activeTabIndex = 0; currentIndex = 0; }
@@ -1059,6 +1229,7 @@
     renderTabs();
     updateEditableUI();
     render(false);
+    sendNotification(tab.collectionId, visitorDisplayName() + ' شال التاب بتاع أقوالك من عنده');
   }
 
   function updateCodeBar(){
@@ -1085,6 +1256,153 @@
     }));
     try{ localStorage.setItem('kenzy-shared-codes', JSON.stringify(items)); }catch(e){}
   }
+
+  // =========================================================
+  // NOTIFICATIONS + USERNAME
+  // =========================================================
+  function visitorDisplayName(){
+    return myUsername || (tabs[0] ? tabs[0].code : 'زائر');
+  }
+
+  function closeAllPanels(){
+    notifPanel.classList.remove('open');
+    usernamePanel.classList.remove('open');
+    notifBtn.classList.remove('active');
+    usernameBtn.classList.remove('active');
+  }
+
+  async function sendNotification(recipientCollectionId, message){
+    if(!sb || !recipientCollectionId) return;
+    try{ await sb.from('notifications').insert({collection_id: recipientCollectionId, message}); }
+    catch(e){ /* إشعار فشل مش مشكلة حرجة، منكملش الشغل عشانه */ }
+  }
+
+  async function refreshNotifBadgeCount(){
+    if(!sb || !tabs[0] || !tabs[0].collectionId) return;
+    try{
+      const {count, error} = await sb.from('notifications').select('id', {count:'exact', head:true}).eq('collection_id', tabs[0].collectionId);
+      if(!error){
+        notifBadge.style.display = count ? 'flex' : 'none';
+        notifBadge.textContent = toArabicDigits(count || 0);
+      }
+    }catch(e){ /* تجاهل */ }
+  }
+
+  function renderNotifications(list){
+    notifBadge.style.display = list.length ? 'flex' : 'none';
+    notifBadge.textContent = toArabicDigits(list.length);
+    if(list.length === 0){
+      notifList.innerHTML = '<p class="panel-empty">لا يوجد إشعارات جديدة</p>';
+      return;
+    }
+    notifList.innerHTML = '';
+    list.forEach(n => {
+      const item = document.createElement('div');
+      item.className = 'notif-item';
+      const span = document.createElement('span');
+      span.textContent = n.message;
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'notif-close';
+      closeBtn.textContent = '×';
+      closeBtn.title = 'حذف الإشعار';
+      closeBtn.addEventListener('click', async () => {
+        const ok = await askConfirm('هل تريدين حذف هذا الإشعار؟');
+        if(!ok) return;
+        try{
+          await sb.from('notifications').delete().eq('id', n.id);
+          loadNotifications();
+        }catch(e){ showToast('تعذّر الحذف'); }
+      });
+      item.appendChild(span);
+      item.appendChild(closeBtn);
+      notifList.appendChild(item);
+    });
+  }
+
+  async function loadNotifications(){
+    if(!sb || !tabs[0] || !tabs[0].collectionId){
+      notifList.innerHTML = '<p class="panel-empty">الميزة دي هتشتغل لما الموقع يترابط بقاعدة البيانات</p>';
+      notifBadge.style.display = 'none';
+      return;
+    }
+    try{
+      const {data, error} = await sb.from('notifications').select('id, message, created_at').eq('collection_id', tabs[0].collectionId).order('created_at', {ascending:false});
+      if(error) throw error;
+      renderNotifications(data || []);
+    }catch(err){
+      notifList.innerHTML = '<p class="panel-empty">تعذّر تحميل الإشعارات</p>';
+    }
+  }
+
+  notifBtn.addEventListener('click', async () => {
+    const willOpen = !notifPanel.classList.contains('open');
+    closeAllPanels();
+    if(willOpen){
+      notifPanel.classList.add('open');
+      notifBtn.classList.add('active');
+      await loadNotifications();
+    }
+  });
+
+  function usernameCooldownDaysLeft(){
+    if(!myUsernameUpdatedAt) return 0;
+    const diffDays = (Date.now() - new Date(myUsernameUpdatedAt).getTime()) / (1000*60*60*24);
+    return diffDays >= 7 ? 0 : Math.ceil(7 - diffDays);
+  }
+
+  function updateUsernameHint(){
+    if(!sb){
+      usernameHint.textContent = 'الميزة دي هتشتغل لما الموقع يترابط بقاعدة البيانات';
+      usernameSaveBtn.disabled = true;
+      return;
+    }
+    usernameSaveBtn.disabled = false;
+    const daysLeft = usernameCooldownDaysLeft();
+    if(daysLeft > 0){
+      usernameHint.textContent = 'تقدري تغيّري اسمك تاني بعد ' + toArabicDigits(daysLeft) + ' يوم';
+    } else {
+      usernameHint.textContent = 'الاسم ده هيظهر للي بيدخلوا يشوفوا أقوالك بالكود';
+    }
+  }
+
+  usernameBtn.addEventListener('click', () => {
+    const willOpen = !usernamePanel.classList.contains('open');
+    closeAllPanels();
+    if(willOpen){
+      usernamePanel.classList.add('open');
+      usernameBtn.classList.add('active');
+      usernameInput.value = myUsername || '';
+      updateUsernameHint();
+      setTimeout(()=> usernameInput.focus(), 200);
+    }
+  });
+
+  usernameSaveBtn.addEventListener('click', async () => {
+    const val = usernameInput.value.trim();
+    if(!val) return;
+    if(!sb){ showToast('لازم نربط الموقع بقاعدة البيانات الأول'); return; }
+    const daysLeft = usernameCooldownDaysLeft();
+    if(daysLeft > 0){
+      showToast('تقدري تغيّري اسمك بعد ' + toArabicDigits(daysLeft) + ' يوم');
+      return;
+    }
+    const ok = await askConfirm('هل تريدين حفظ هذا الاسم فعلاً؟');
+    if(!ok) return;
+    usernameSaveBtn.disabled = true;
+    try{
+      const nowIso = new Date().toISOString();
+      const {error} = await sb.from('collections').update({owner_name: val, username_updated_at: nowIso}).eq('id', tabs[0].collectionId);
+      if(error) throw error;
+      myUsername = val;
+      myUsernameUpdatedAt = nowIso;
+      showToast('اتحفظ اسمك');
+      updateUsernameHint();
+    }catch(err){
+      showToast('تعذّر الحفظ، حاولي تاني');
+    }finally{
+      usernameSaveBtn.disabled = false;
+    }
+  });
 
   tabAddBtn.addEventListener('click', () => {
     const open = codeEntryForm.classList.toggle('open');
@@ -1120,6 +1438,7 @@
       switchTab(tabs.length - 1);
       codeEntryForm.classList.remove('open');
       codeEntryInput.value = '';
+      sendNotification(result.collectionId, visitorDisplayName() + ' دخل على أقاويلك');
     }catch(err){
       showToast('حصل خطأ، حاولي تاني');
     }finally{
@@ -1264,7 +1583,7 @@
   deleteBtn.addEventListener('click', async () => {
     const tab = activeTab();
     if(!tab.editable || tab.quotes.length === 0) return;
-    const ok = await askConfirm();
+    const ok = await askConfirm('هل تريدين حذف هذه المقولة؟');
     if(!ok) return;
     const q = tab.quotes[currentIndex];
     try{
@@ -1287,6 +1606,8 @@
     try{
       const mine = await store.ensureMine();
       tabs = [{code:mine.code, collectionId:mine.collectionId, label:'أقوالي', quotes:mine.quotes, editable:true}];
+      myUsername = mine.username || null;
+      myUsernameUpdatedAt = mine.usernameUpdatedAt || null;
     }catch(err){
       console.error(err);
       tabs = [{code:'------', collectionId:null, label:'أقوالي', quotes:DEFAULT_QUOTES.map(t=>({id:genId(), text:t})), editable:true}];
@@ -1312,6 +1633,7 @@
     updateCodeBar();
     updateEditableUI();
     render(false);
+    refreshNotifBadgeCount();
   }
 
   init();
