@@ -1454,7 +1454,7 @@
     if(!sb || !tabs[0] || !tabs[0].collectionId || !ownerCollectionId) return;
     try{
       await sb.from('watchers').upsert(
-        {owner_collection_id: ownerCollectionId, watcher_collection_id: tabs[0].collectionId},
+        {owner_collection_id: ownerCollectionId, watcher_collection_id: tabs[0].collectionId, active:true},
         {onConflict: 'owner_collection_id,watcher_collection_id'}
       );
     }catch(e){ /* تجاهل، مش حرج */ }
@@ -1463,7 +1463,8 @@
   async function unregisterWatcher(ownerCollectionId){
     if(!sb || !tabs[0] || !tabs[0].collectionId || !ownerCollectionId) return;
     try{
-      await sb.from('watchers').delete()
+      // منمسحش السجل نفسه عشان لو الشخص محجوب يفضل محجوب حتى لو قفل وفتح التاب تاني
+      await sb.from('watchers').update({active:false})
         .eq('owner_collection_id', ownerCollectionId)
         .eq('watcher_collection_id', tabs[0].collectionId);
     }catch(e){ /* تجاهل */ }
@@ -1472,7 +1473,7 @@
   async function notifyWatchers(actionKey){
     if(!sb || !tabs[0] || !tabs[0].collectionId) return;
     try{
-      const {data, error} = await sb.from('watchers').select('watcher_collection_id').eq('owner_collection_id', tabs[0].collectionId);
+      const {data, error} = await sb.from('watchers').select('watcher_collection_id').eq('owner_collection_id', tabs[0].collectionId).eq('active', true);
       if(error || !data) return;
       for(const w of data){
         sendNotification(w.watcher_collection_id, actionKey);
@@ -1656,7 +1657,7 @@
       return;
     }
     try{
-      const {data: rows, error} = await sb.from('watchers').select('id, watcher_collection_id, blocked').eq('owner_collection_id', tabs[0].collectionId).order('created_at', {ascending:false});
+      const {data: rows, error} = await sb.from('watchers').select('id, watcher_collection_id, blocked').eq('owner_collection_id', tabs[0].collectionId).eq('active', true).order('created_at', {ascending:false});
       if(error) throw error;
       if(!rows || rows.length === 0){
         viewersList.innerHTML = '<p class="panel-empty">محدش فاتح أقوالك لسه</p>';
