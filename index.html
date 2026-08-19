@@ -222,6 +222,25 @@
     color:var(--grey-light);
     margin-bottom:10px;
   }
+  .panel-header-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:4px;
+  }
+  .panel-header-row .panel-header{ margin-bottom:0; }
+  .panel-clear-btn{
+    background:none;
+    border:1px solid var(--panel-border);
+    color:var(--grey-mid);
+    font-family:'Tajawal', sans-serif;
+    font-size:0.7rem;
+    padding:4px 12px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .panel-clear-btn:hover{ border-color:var(--red-dark); color:var(--red-glow); }
   .panel-empty{
     font-family:'Tajawal', sans-serif;
     font-size:0.8rem;
@@ -934,7 +953,10 @@
 
     <div class="panel" id="notifPanel">
       <div class="panel-inner">
-        <div class="panel-header">الإشعارات</div>
+        <div class="panel-header-row">
+          <div class="panel-header">الإشعارات</div>
+          <button class="panel-clear-btn" id="notifClearAllBtn" style="display:none;">مسح الكل</button>
+        </div>
         <div class="panel-body" id="notifList"><p class="panel-empty">لا يوجد إشعارات جديدة</p></div>
       </div>
     </div>
@@ -1117,6 +1139,7 @@
   const notifBadge = document.getElementById('notifBadge');
   const notifPanel = document.getElementById('notifPanel');
   const notifList = document.getElementById('notifList');
+  const notifClearAllBtn = document.getElementById('notifClearAllBtn');
   const viewersBtn = document.getElementById('viewersBtn');
   const viewersPanel = document.getElementById('viewersPanel');
   const viewersList = document.getElementById('viewersList');
@@ -1340,7 +1363,7 @@
     renderTabs();
     updateEditableUI();
     render(false);
-    sendNotification(tab.collectionId, visitorDisplayName() + ' شال التاب بتاع أقوالك من عنده');
+    sendNotification(tab.collectionId, 'left');
     unregisterWatcher(tab.collectionId);
   }
 
@@ -1402,10 +1425,29 @@
     }catch(e){ return false; }
   }
 
-  async function sendNotification(recipientCollectionId, message){
-    if(!sb || !recipientCollectionId) return;
-    try{ await sb.from('notifications').insert({collection_id: recipientCollectionId, message}); }
-    catch(e){ /* إشعار فشل مش مشكلة حرجة، منكملش الشغل عشانه */ }
+  const ACTION_TEXT = {
+    visit: 'دخل على أقاويلك',
+    left: 'شال التاب بتاع أقوالك من عنده',
+    quote_added: 'أضاف مقولة جديدة',
+    quote_deleted: 'حذف مقولة'
+  };
+
+  function getAliasForCode(code){
+    if(!code) return null;
+    const t = tabs.find((tab, i) => i > 0 && tab.code === code);
+    return (t && t.customLabel) ? t.customLabel : null;
+  }
+
+  async function sendNotification(recipientCollectionId, actionKey){
+    if(!sb || !recipientCollectionId || !tabs[0]) return;
+    try{
+      await sb.from('notifications').insert({
+        collection_id: recipientCollectionId,
+        sender_code: tabs[0].code,
+        sender_username_snapshot: myUsername || null,
+        action_key: actionKey
+      });
+    }catch(e){ /* إشعار فشل مش مشكلة حرجة، منكملش الشغل عشانه */ }
   }
 
   async function registerWatcher(ownerCollectionId){
@@ -1427,14 +1469,13 @@
     }catch(e){ /* تجاهل */ }
   }
 
-  async function notifyWatchers(message){
+  async function notifyWatchers(actionKey){
     if(!sb || !tabs[0] || !tabs[0].collectionId) return;
     try{
       const {data, error} = await sb.from('watchers').select('watcher_collection_id').eq('owner_collection_id', tabs[0].collectionId);
       if(error || !data) return;
-      const name = visitorDisplayName();
       for(const w of data){
-        sendNotification(w.watcher_collection_id, name + ' ' + message);
+        sendNotification(w.watcher_collection_id, actionKey);
       }
     }catch(e){ /* تجاهل */ }
   }
@@ -1453,16 +1494,55 @@
   function renderNotifications(list){
     notifBadge.style.display = list.length ? 'flex' : 'none';
     notifBadge.textContent = toArabicDigits(list.length);
+    notifClearAllBtn.style.display = list.length ? 'inline-block' : 'none';
     if(list.length === 0){
       notifList.innerHTML = '<p class="panel-empty">لا يوجد إشعارات جديدة</p>';
       return;
     }
+
+    // نجهّز كل إشعار: نحسب اسمه (مستعار لو موجود) ونص الحدث
+    const composed = list.map(n => {
+      if(n.action_key && ACTION_TEXT[n.action_key]){
+        const alias = getAliasForCode(n.sender_code);
+        const name = alias || n.sender_username_snapshot || n.sender_code || 'زائر';
+        return {id:n.id, name, code:n.sender_code || '', actionText: ACTION_TEXT[n.action_key], legacy:null};
+      }
+      return {id:n.id, name:null, code:'', actionText:null, legacy:n.message || ''};
+    });
+
+    // لو في اسمين زي بعض، نضيف الكود جنب كل واحد فيهم للتفرقة
+    const nameCounts = {};
+    composed.forEach(c => { if(c.name) nameCounts[c.name] = (nameCounts[c.name] || 0) + 1; });
+    composed.forEach(c => {
+      if(c.name){
+        const shownName = (nameCounts[c.name] > 1 && c.code) ? (c.name + ' (' + c.code + ')') : c.name;
+        c.finalText = shownName + ' ' + c.actionText;
+      } else {
+        c.finalText = c.legacy;
+      }
+    });
+
+    // تجميع الإشعارات المتكررة (نفس الشخص ونفس الحدث) في سطر واحد بعلامة ×العدد
+    const groups = [];
+    const groupIndex = new Map();
+    composed.forEach(c => {
+      const key = c.name ? (c.code + '|' + c.actionText) : ('legacy|' + c.legacy);
+      if(!groupIndex.has(key)){
+        groupIndex.set(key, groups.length);
+        groups.push({ids:[c.id], text:c.finalText, count:1});
+      } else {
+        const g = groups[groupIndex.get(key)];
+        g.ids.push(c.id);
+        g.count += 1;
+      }
+    });
+
     notifList.innerHTML = '';
-    list.forEach(n => {
+    groups.forEach(g => {
       const item = document.createElement('div');
       item.className = 'notif-item';
       const span = document.createElement('span');
-      span.textContent = n.message;
+      span.textContent = g.count > 1 ? (g.text + ' ×' + toArabicDigits(g.count)) : g.text;
       const closeBtn = document.createElement('button');
       closeBtn.className = 'notif-close';
       closeBtn.textContent = '×';
@@ -1471,8 +1551,9 @@
         const ok = await askConfirm('هل تريد حذف هذا الإشعار؟', 'نعم، احذف', 'لا، تراجع');
         if(!ok) return;
         try{
-          await sb.from('notifications').delete().eq('id', n.id);
+          await sb.from('notifications').delete().in('id', g.ids);
           loadNotifications();
+          refreshNotifBadgeCount();
         }catch(e){ showToast('تعذّر الحذف'); }
       });
       item.appendChild(span);
@@ -1485,16 +1566,28 @@
     if(!sb || !tabs[0] || !tabs[0].collectionId){
       notifList.innerHTML = '<p class="panel-empty">الميزة دي هتشتغل لما الموقع يترابط بقاعدة البيانات</p>';
       notifBadge.style.display = 'none';
+      notifClearAllBtn.style.display = 'none';
       return;
     }
     try{
-      const {data, error} = await sb.from('notifications').select('id, message, created_at').eq('collection_id', tabs[0].collectionId).order('created_at', {ascending:false});
+      const {data, error} = await sb.from('notifications').select('id, message, sender_code, sender_username_snapshot, action_key, created_at').eq('collection_id', tabs[0].collectionId).order('created_at', {ascending:false});
       if(error) throw error;
       renderNotifications(data || []);
     }catch(err){
       notifList.innerHTML = '<p class="panel-empty">تعذّر تحميل الإشعارات</p>';
     }
   }
+
+  notifClearAllBtn.addEventListener('click', async () => {
+    if(!sb || !tabs[0] || !tabs[0].collectionId) return;
+    const ok = await askConfirm('هل تريد مسح كل الإشعارات؟', 'نعم، امسح الكل', 'لا، تراجع');
+    if(!ok) return;
+    try{
+      await sb.from('notifications').delete().eq('collection_id', tabs[0].collectionId);
+      loadNotifications();
+      refreshNotifBadgeCount();
+    }catch(e){ showToast('تعذّر المسح'); }
+  });
 
   notifBtn.addEventListener('click', async () => {
     const willOpen = !notifPanel.classList.contains('open');
@@ -1517,14 +1610,26 @@
   });
 
   function renderViewers(rows, colMap){
-    viewersList.innerHTML = '';
-    rows.forEach(r => {
+    // نحسب اسم كل شخص: الاسم المستعار (لو موجود) وإلا اسم المستخدم بتاعه وإلا الكود
+    const entries = rows.map(r => {
       const col = colMap[r.watcher_collection_id];
-      const name = col ? (col.owner_name || col.code) : 'مستخدم';
+      const code = col ? col.code : '';
+      const alias = getAliasForCode(code);
+      const baseName = alias || (col ? (col.owner_name || col.code) : 'مستخدم');
+      return {row:r, code, baseName};
+    });
+
+    // لو في اسمين زي بعض، نضيف الكود جنب كل واحد فيهم للتفرقة
+    const nameCounts = {};
+    entries.forEach(e => { nameCounts[e.baseName] = (nameCounts[e.baseName] || 0) + 1; });
+
+    viewersList.innerHTML = '';
+    entries.forEach(({row:r, code, baseName}) => {
+      const shownName = (nameCounts[baseName] > 1 && code) ? (baseName + ' (' + code + ')') : baseName;
       const item = document.createElement('div');
       item.className = 'viewer-item' + (r.blocked ? ' blocked' : '');
       const span = document.createElement('span');
-      span.textContent = name + (r.blocked ? ' (محجوب)' : '');
+      span.textContent = shownName + (r.blocked ? ' (محجوب)' : '');
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'viewer-toggle' + (r.blocked ? ' is-blocked' : '');
       toggleBtn.textContent = r.blocked ? 'إلغاء الحجب' : 'حجب';
@@ -1662,7 +1767,7 @@
       switchTab(tabs.length - 1);
       codeEntryForm.classList.remove('open');
       codeEntryInput.value = '';
-      sendNotification(result.collectionId, visitorDisplayName() + ' دخل على أقاويلك');
+      sendNotification(result.collectionId, 'visit');
       registerWatcher(result.collectionId);
     }catch(err){
       showToast('حصل خطأ، حاول تاني');
@@ -1724,7 +1829,7 @@
     const list = tab.quotes;
     const hasQuotes = list.length > 0;
     const text = tab.blocked
-      ? 'صاحب الأقوال هذه حجبك عن مشاهدتها 🚫'
+      ? 'صاحب الأقوال ده حجبك عن مشاهدتها 🚫'
       : (hasQuotes ? list[currentIndex].text : 'لا توجد مقولات هنا بعد');
 
     const doRender = () => {
@@ -1801,7 +1906,7 @@
       addToggle.classList.remove('open');
       goTo(tab.quotes.length - 1);
       showToast('أُضيئت مقولتك في الصفحة');
-      notifyWatchers('أضاف مقولة جديدة');
+      notifyWatchers('quote_added');
     }catch(err){
       showToast('تعذّر الحفظ، حاول تاني');
     }finally{
@@ -1820,7 +1925,7 @@
     }catch(err){
       showToast('تعذّر الحذف'); return;
     }
-    notifyWatchers('حذف مقولة');
+    notifyWatchers('quote_deleted');
     if(tab.quotes.length === 0){
       render(false);
       return;
